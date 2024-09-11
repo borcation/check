@@ -1,0 +1,55 @@
+{
+	"pages": [{
+		"path": "pages/check/check",
+		"style": {
+			"navigationBarTitleText": "打卡"
+		}
+	},
+	{
+		"path" : "pages/target/target",
+		"style" : 
+		{
+			"navigationBarTitleText" : "目标"
+		}
+	},
+	{
+		"path" : "pages/me/me",
+		"style" : 
+		{
+			"navigationBarTitleText" : "我的"
+		}
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#4ab3ec",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [{
+			"pagePath": "pages/check/check",
+			"text": "打卡",
+			"iconPath": "static/check.png",
+			"selectedIconPath": "static/check-selected.png"
+		},
+		{
+			"pagePath": "pages/target/target",
+			"text": "目标",
+			"iconPath": "static/target.png",
+			"selectedIconPath": "static/target-selected.png"
+		},
+		{
+			"pagePath": "pages/me/me",
+			"text": "我的",
+			"iconPath": "static/me.png",
+			"selectedIconPath": "static/me-selected.png"
+		}]
+	}
+}

@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/check/check",
+    "pages/target/target",
+    "pages/me/me"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#4ab3ec",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/check/check",
+        "text": "打卡",
+        "iconPath": "static/check.png",
+        "selectedIconPath": "static/check-selected.png"
+      },
+      {
+        "pagePath": "pages/target/target",
+        "text": "目标",
+        "iconPath": "static/target.png",
+        "selectedIconPath": "static/target-selected.png"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的",
+        "iconPath": "static/me.png",
+        "selectedIconPath": "static/me-selected.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

@@ -1,0 +1,63 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID,系统自动生成"
+		},
+		"target_id": {
+			"title": "目标ID",
+			"bsonType": "int"
+		},
+		"target_name": {
+			"title": "目标名称",
+			"bsonType": "string"
+		},
+		"target_options": {
+			"title": "目标选项",
+			"bsonType": "object",
+			"properties": {
+				"score0_item":{
+					"bsonType": "string",
+					"title": "分数0的选项"
+				},
+				"score1_item":{
+					"bsonType": "string",
+					"title": "分数1的选项"
+				},
+				"score2_item":{
+					"bsonType": "string",
+					"title": "分数2的选项"
+				},
+				"score3_item":{
+					"bsonType": "string",
+					"title": "分数3的选项"
+				},
+				"score4_item":{
+					"bsonType": "string",
+					"title": "分数4的选项"
+				},
+			}
+		},
+		"target_is_done": {
+			"title": "目标是否完成",
+			"bsonType": "bool"
+		},
+		"target_frequency": {
+			"title": "目标频率",
+			"bsonType": "string",
+			"enum": ["per_day","per_week","per_month"]
+		},
+		"target_use": {
+			"title": "目标是否启用",
+			"bsonType": "bool"
+		}
+	}
+}

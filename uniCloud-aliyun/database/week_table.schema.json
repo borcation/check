@@ -1,0 +1,45 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"week_id": {
+			"title": "周目标ID",
+			"bsonType": "int"
+		},
+		"week_name": {
+			"title": "周目标达成条件",
+			"bsonType": "string"
+		},
+		"week_target_id": {
+			"title": "被监控的目标ID",
+			"bsonType": "int"
+		},
+		"week_reqest": {
+			"title": "该目标需要达到多少分",
+			"bsonType": "int"
+		},
+		"week_current": {
+			"title": "该目标目前多少分",
+			"bsonType": "int"
+		},
+		"week_award": {
+			"title": "奖励类型（默认奖励1个）",
+			"bsonType": "string",
+			"enum": ["flower","diamond"]
+		},
+		"week_is_done": {
+			"title": "该周目标是否完成",
+			"bsonType": "bool"
+		}
+	}
+}

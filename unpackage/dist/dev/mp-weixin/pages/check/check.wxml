@@ -1,0 +1,1 @@
+<view class="container"><view class="target-item" bindtap="{{a}}">早起</view><view class="target-item">学习</view><view class="target-item">早睡</view><view class="target-item">锻炼</view><view class="target-item">yule</view><view class="target-item">add</view></view>

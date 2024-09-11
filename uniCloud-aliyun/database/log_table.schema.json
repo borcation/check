@@ -1,0 +1,53 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"log_id": {
+			"title": "日志ID",
+			"bsonType": "int"
+		},
+		"log_time": {
+			"title": "日志产生时间",
+			"bsonType": "timestamp"
+		},
+		"log_from": {
+			"title": "日志来源",
+			"bsonType": "string",
+			"enum": ["user","system"]
+		},
+		"log_event": {
+			"title": "日志事件",
+			"bsonType": "string"
+		},
+		"day_score": {
+			"title": "当下总分",
+			"bsonType": "int"
+		},
+		"score_number": {
+			"title": "分数详情",
+			"bsonType": "string"
+		},
+		"flower_number": {
+			"title": "当前花花数量",
+			"bsonType": "int"
+		},
+		"diamond_number": {
+			"title": "当前钻石数量",
+			"bsonType": "int"
+		},
+		"is_takeback": {
+			"title": "log是否允许收回",
+			"bsonType": "bool"
+		}
+	}
+}
