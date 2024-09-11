@@ -9,27 +9,13 @@ module.exports = {
 	async get_max_id(){
 		const res = await tgt.orderBy('target_id','desc').limit(1).field({'target_id':true}).get()
 		console.log('res',res)
-		int max_id = res.data[0].target_id?int(res.data[0].target_id):0
+		var max_id = res.data[0].target_id?res.data[0].target_id:0
 		console.log('max',max_id)
 		return max_id
 	},
 
-	async target_add( ){
+	async target_add(target_info){
 		console.log("进入添加目标函数")
-		target_info = {
-			"target_id":1,
-			"target_name":"早起",
-			"target_options":{
-				"score0_item":"九点后",
-				"score1_item":"九点",
-				"score2_item":"八点半",
-				"score3_item":"八点",
-				"score4_item":"七点半",
-			},
-			"target_is_done":false,
-			"target_frequency":"per_day",
-			"target_use":true
-		}
 		console.log("待添加的目标信息",target_info)
 		const res = await tgt.add(target_info)
 		console.log("添加结果",res)
