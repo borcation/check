@@ -11,7 +11,7 @@
 
 		<unicloud-db ref="tgt" v-slot:default="{data, loading, error, options}" collection="target_table" orderby="target_id asc">
 			<view class="target-box">
-				<view class="target-item" v-for="(item, index) in data" :key="item._id" @click="check()">
+				<view class="target-item" v-for="(item, index) in data" :key="item._id" @click="pop(item.target_id,item.target_name,item.target_description,item.target_options)">
 					<view class="target-item-block"></view>
 					<view class="target-item-name">
 						{{ item.target_name }}
@@ -30,6 +30,31 @@
 				<view class="target-item-empty" v-if="data.length % 2 === 0"></view>
 			</view>
 		</unicloud-db>
+		<uni-popup ref="popup" type="center">
+			<view class="target-pop">
+				<view class="pop-name">
+					<text>{{ pop_data.name }}</text>
+				</view>
+				<view class="pop-description">{{ pop_data.description }}</view>
+				<view class="pop-list">
+					<radio-group @change="radioChange">
+						<label class="pop-lable" v-for="(item, index) in pop_data.options" :key="index">
+							<view class="pop-lable-index">{{index}}分:</view>
+							<view class="pop-lable-text">{{item}}</view>
+							<view class="pop-lable-select">
+								<radio :value="index" :checked="index === pop_data.current_score " />
+							</view>
+						</label>
+					</radio-group>
+				</view>
+				<!-- <view v-for="(item, index) in pop_data.options" :key="index">
+					<view>{{ item }}</view>
+				</view> -->
+				<view class="pop-button">
+					<button size="default" type="default" plain="true" style="width: 120px;height: 50px;">打卡</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -41,7 +66,14 @@
 				date: new Date(),
 				time: new Date().toLocaleTimeString(),
 				d_remain: Math.ceil((new Date('2024-12-21') - new Date()) / (1000 * 60 * 60 * 24)),
-				slogan: '每天自律一点点'
+				slogan: '每天自律一点点',
+				pop_data:{
+					id:0,
+					name:'',
+					description:'',
+					options:{},
+					current_score: -1,
+				}
 			}
 		},
 		mounted() {
@@ -59,6 +91,17 @@
 				var month = date.getMonth() + 1;
 				var day = date.getDate();
 				return year + '-' + month + '-' + day;
+			},
+			pop(id,name,description,options){
+				this.pop_data.id = id;
+				this.pop_data.name = name;
+				this.pop_data.description = description;
+				this.pop_data.options = options;
+				for (let key in options) {
+					console.log(key, options[key]);
+				}
+				this.$refs.popup.open();
+				console.log(id,name,description,options)
 			},
 			async add() {
 				console.log('add')
@@ -82,7 +125,11 @@
 				}
 				// var r = await TM.target_add(target_info)
 				this.$refs.tgt.refresh() //udb为unicloud-db组件的ref属性值
-			}
+			},
+			radioChange: function(evt) {
+				// console.log(evt.detail);
+				this.pop_data.current_score = evt.detail.value;
+        	}
 		}
 	}
 </script>
@@ -194,5 +241,89 @@
 		margin: 5px;
 		height: 40px;
 		background-color:transparent;
+	}
+	.target-pop{
+		width: 300px;
+		height: 420px;
+		background-color: white;
+		border-radius: 10px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.pop-name{
+		width: 40%;
+		height: 40px;
+		/* background-color: lightpink; */
+		font-size: 24px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 20px;
+	}
+	.pop-description{
+		width: 80%;
+		height: 20px;
+		/* background-color: lightblue; */
+		font-size: 16px;
+		color: gray;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.pop-list{
+		width: 80%;
+		height: 200px;
+		/* background-color: lightgreen; */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.pop-lable{
+		width: 220px;
+		height: 35px;
+		/* background-color: lightblue; */
+		font-size: 16px;
+		/* color: gray; */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-bottom: 1px solid lightgray;
+	}
+	.pop-lable-index{
+		width: 60px;
+		height: 35px;
+		/* background-color: lightblue; */
+		font-size: 16px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: gray;
+	}
+	.pop-lable-text{
+		width: 100px;
+		height: 35px;
+		/* background-color: lightgoldenrodyellow; */
+		font-size: 15px;
+		color: gray;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.pop-lable-select{
+		width: 40px;
+		height: 35px;
+		/* background-color: lightblue; */
+		font-size: 16px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.pop-button{
+		width: 120px;
+		height: 50px;
+		/* background-color: lightpink; */
+		margin-bottom: 20px;
 	}
 </style>
