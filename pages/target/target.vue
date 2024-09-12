@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bg">
 		
 	</view>
 </template>
@@ -17,6 +17,13 @@
 	}
 </script>
 
-<style>
-
+<style >
+	.bg {
+		width: 100%;
+		height: 100vh;
+		font-size: 14px;
+		line-height: 24px;
+		padding: 10px;
+		background:linear-gradient(to bottom, #98e9ff, #F8F8F8);
+	}
 </style>
