@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "目标",
-  "usingComponents": {}
+  "usingComponents": {
+    "zeng-calen": "../../uni_modules/zeng-calen/components/zeng-calen/zeng-calen"
+  }
 }

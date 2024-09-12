@@ -1,1 +1,1 @@
-<view></view>
+<view class="bg"><view class="calen"><zeng-calen wx:if="{{b}}" bindonDayClick="{{a}}" u-i="451bbb5c-0" bind:__l="__l" u-p="{{b}}"></zeng-calen></view></view>
