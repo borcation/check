@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "目标",
   "usingComponents": {
-    "zeng-calen": "../../uni_modules/zeng-calen/components/zeng-calen/zeng-calen"
+    "lunc-calendar": "../../uni_modules/lunc-calendar/components/lunc-calendar/lunc-calendar"
   }
 }

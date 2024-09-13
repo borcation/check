@@ -1,6 +1,21 @@
 const db = uniCloud.database();
 const tgt = db.collection('target_table');
 const dbCmd = db.command
+// const target_info ={
+// 	"target_id":max_id+1,
+// 	"target_name":"情绪状态",
+// 	"target_description":"你今天心情怎么样?",
+// 	"target_options":{
+// 		"0":"心情烦闷",
+// 		"1":"略显疲惫",
+// 		"2":"无风无浪",
+// 		"3":"小小喜悦",
+// 		"4":"干劲十足",
+// 	},
+// 	"target_is_done":false,
+// 	"target_frequency":"per_day",
+// 	"target_use":true 
+// }
 module.exports = {
 	_before: function () { // 通用预处理器
 

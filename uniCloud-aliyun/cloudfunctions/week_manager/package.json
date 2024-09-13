@@ -1,0 +1,7 @@
+{
+  "name": "week_manager",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
