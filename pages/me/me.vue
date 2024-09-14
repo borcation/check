@@ -21,19 +21,19 @@
 			</view>
 		</view>
 		<view class="page_list">
-			<view class="page_item">
+			<view class="page_item" @click="go_award()">
 				<text>奖励兑换</text>、
 				<view class="icon">
 					<uni-icons type="right" color="gray" size="24"/>
 				</view>
 			</view>
-			<view class="page_item">
+			<view class="page_item" @click="go_log()">
 				<text>日志查看</text>
 				<view class="icon">
 					<uni-icons type="right" color="gray" size="24"/>
 				</view>
 			</view>
-			<view class="page_item">
+			<view class="page_item" @click="go_set()">
 				<text>设置</text>
 				<view class="icon">
 					<uni-icons type="right" color="gray" size="24"/>
@@ -52,7 +52,16 @@
 			}
 		},
 		methods: {
-			
+			go_award() {
+				uni.navigateTo({
+					url: '/pages/award/award'
+				})
+			},
+			go_log() {
+				uni.navigateTo({
+					url: '/pages/log/log'
+				})
+			},
 		}
 	}
 </script>
