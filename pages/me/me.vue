@@ -8,16 +8,36 @@
 			<view class="user_name">孙玉琼</view>
 			<view class="award_box">
 				<view class="award_item">
-					<text class="award_text">花花</text>
+					<!-- <text class="award_text">花花</text> -->
 					<image src="/static/flower.png" />
-					<text class="award_num">0</text>
+					<text class="award_num">{{ num_flower }}个</text>
 				</view>
 				<view class="award_item">
-					<text class="award_text">钻石</text>
+					<!-- <text class="award_text">钻石</text> -->
 					<image src="/static/diamond.png"/>
-					<text class="award_num">0</text>
+					<text class="award_num">{{ num_diamond }}个</text>
 				</view>
 
+			</view>
+		</view>
+		<view class="page_list">
+			<view class="page_item">
+				<text>奖励兑换</text>、
+				<view class="icon">
+					<uni-icons type="right" color="gray" size="24"/>
+				</view>
+			</view>
+			<view class="page_item">
+				<text>日志查看</text>
+				<view class="icon">
+					<uni-icons type="right" color="gray" size="24"/>
+				</view>
+			</view>
+			<view class="page_item">
+				<text>设置</text>
+				<view class="icon">
+					<uni-icons type="right" color="gray" size="24"/>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -27,8 +47,8 @@
 	export default {
 		data() {
 			return {
-				num_flower: 0,
-				num_diamond: 0,
+				num_flower: 15,
+				num_diamond: 1,
 			}
 		},
 		methods: {
@@ -59,53 +79,98 @@
 		z-index: 1;
 	}
 	.user_info{
-		background-color: bisque;
-		margin-top: 200rpx;
-		width: 500rpx;
-		height: 200px;;
+		background-color:#fff;
+		margin-top: 100rpx;
+		width: 300rpx;
+		height: 400rpx;
+		border-radius: 10%;
+		padding: 10px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		z-index: 2;
-	}
-	.user_logo{
-		width: 100px;
-		height: 100px;
-		border-radius: 50%;
-		background-color: #fff;
-		image{
+		.user_logo{
 			width: 100px;
 			height: 100px;
 			border-radius: 50%;
-		}
-	}
-	.award_box{	
-		background-color: blueviolet;
-		height: 100px;
-		width: 5%;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		width: 100%;
-		margin-top: 20px;
-		.award_item{
-			background-color: aqua;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			.award_text{
-				font-size: 12px;
-			}
-			.award_num{
-				font-size: 12px;
-			}
+			background-color: #fff;
 			image{
-				width: 30px;
-				height: 30px;
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
 			}
 		}
-		
+		.user_name{
+			font-size: 20px;
+			font-weight: bold;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		.award_box{	
+			// background-color: blueviolet;
+			height: 60px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			width: 100%;
+			margin-top: 5px;
+			.award_item{
+				// background-color: aqua;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				.award_text{
+					font-size: 12px;
+				}
+				.award_num{
+					font-size: 16px;
+				}
+				image{
+					width: 30px;
+					height: 30px;
+				}
+			}
+		}
 	}
+	.page_list{	
+		background-color: #fff;
+		width: 700rpx;
+		margin-top: 20px;
+		display: flex;
+		flex-direction: column;
+		border-radius: 10px;
+		.page_item{
+			width: 700rpx;
+			height: 50px;
+			background-color:#FFF;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid #ccc;
+			&:last-child {
+				border-bottom: none;
+			}
+			&:first-child {
+				border-top-left-radius: 10px;
+				border-top-right-radius: 10px;
+			}
+			&:last-child {
+				border-bottom-left-radius: 10px;
+				border-bottom-right-radius: 10px;
+			}
+			text{
+				font-size: 16px;
+				// background-color: aqua;
+				margin-left: 20px;
+			}
+			.icon {
+				margin-right: 10px; /* Adjust the margin as needed */
+			}
+		}
+	}
+
+	
 
 </style>
