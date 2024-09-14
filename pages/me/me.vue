@@ -1,6 +1,25 @@
 <template>
 	<view class="bg">
-		
+		<view class="head_top"></view>
+		<view class="user_info">
+			<view class="user_logo">
+				<image src="/static/logo.png" class="logo"></image>
+			</view>
+			<view class="user_name">孙玉琼</view>
+			<view class="award_box">
+				<view class="award_item">
+					<text class="award_text">花花</text>
+					<image src="/static/flower.png" />
+					<text class="award_num">0</text>
+				</view>
+				<view class="award_item">
+					<text class="award_text">钻石</text>
+					<image src="/static/diamond.png"/>
+					<text class="award_num">0</text>
+				</view>
+
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -8,7 +27,8 @@
 	export default {
 		data() {
 			return {
-				
+				num_flower: 0,
+				num_diamond: 0,
 			}
 		},
 		methods: {
@@ -17,13 +37,75 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.bg {
 		width: 100%;
 		height: 100vh;
 		font-size: 14px;
 		line-height: 24px;
-		padding: 10px;
 		background:linear-gradient(to bottom, #98e9ff, #F8F8F8);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
+/* 页面顶部圆弧背景 */
+	.head_top {
+		width: 100%;
+		height: 200px;
+		background:#98ddff;
+		border-bottom-left-radius: 60%;
+		border-bottom-right-radius: 60%;
+		position:fixed;
+		z-index: 1;
+	}
+	.user_info{
+		background-color: bisque;
+		margin-top: 200rpx;
+		width: 500rpx;
+		height: 200px;;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+	}
+	.user_logo{
+		width: 100px;
+		height: 100px;
+		border-radius: 50%;
+		background-color: #fff;
+		image{
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+		}
+	}
+	.award_box{	
+		background-color: blueviolet;
+		height: 100px;
+		width: 5%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		width: 100%;
+		margin-top: 20px;
+		.award_item{
+			background-color: aqua;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.award_text{
+				font-size: 12px;
+			}
+			.award_num{
+				font-size: 12px;
+			}
+			image{
+				width: 30px;
+				height: 30px;
+			}
+		}
+		
+	}
+
 </style>
