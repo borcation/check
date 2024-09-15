@@ -5,7 +5,7 @@
 			<view class="user_logo">
 				<image src="/static/logo.png" class="logo"></image>
 			</view>
-			<view class="user_name">孙玉琼</view>
+			<view class="user_name">{{ user_name }}</view>
 			<view class="award_box">
 				<view class="award_item">
 					<!-- <text class="award_text">花花</text> -->
@@ -47,9 +47,17 @@
 	export default {
 		data() {
 			return {
+				user_name: "孙玉琼",
+				user_avatar: '/static/avatar.png',
 				num_flower: 15,
 				num_diamond: 1,
 			}
+		},
+		onLoad() {
+			this.user_name = getApp().globalData.userInfo.user_name;
+			this.user_avatar = getApp().globalData.userInfo.user_avatar;
+			this.num_flower = getApp().globalData.userInfo.data.key_data.flower.num_all;
+			this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
 		},
 		methods: {
 			go_award() {
