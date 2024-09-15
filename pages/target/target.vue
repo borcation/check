@@ -25,7 +25,7 @@
 					</view>
 				</view>
 				<view class="week-button">
-					<button :disabled="item.percent<100" style="width: 60px;height: 40px;font-size: 16px;"
+					<button :disabled="item.percent<100||item.target_checked==true" style="width: 60px;height: 40px;font-size: 16px;"
 						@click="week_finish(item.week_id)">领奖</button>
 				</view>
 			</view>
@@ -44,15 +44,19 @@ export default {
 				info: "张三生日"
 			}],
 			week_list: [],
+			regular_target_list: [],
+			day_target_list: [],
+			week_target_list: [],
 		}
 	},
 	onLoad() {
-		this.regular_target_list = getApp().globalData.userInfo.data.regular_target_list;
-		this.day_target_list = getApp().globalData.userInfo.data.day_target_list;
-		this.week_target_list = getApp().globalData.userInfo.data.week_target_list;
+
 	},
 	mounted() {
-		this.update_data(this.day_target_list, this.regular_target_list, this.week_target_list)
+	},
+	onShow() {
+		console.log("target onShow")
+		this.update_data()
 	},
 	methods: {
 		dayChange(dayInfo) { // 点击日期
@@ -86,11 +90,18 @@ export default {
 			// 调用 deleteSignList 方法，传入需要删除的标记数组
 			this.$refs.calendar.deleteSignList(deleteList);
 		},
-		update_data(day_target_list,regular_target_list,week_target_list) {
+		update_data() {
+			this.regular_target_list = getApp().globalData.userInfo.data.regular_target_list;
+			this.day_target_list = getApp().globalData.userInfo.data.day_target_list;
+			this.week_target_list = getApp().globalData.userInfo.data.week_target_list;
+			this.week_list = [];
+			var regular_target_list = this.regular_target_list;
+			var day_target_list = this.day_target_list;
+			var week_target_list = this.week_target_list;
 			for (var i = 0; i < day_target_list.length; i++) {
 				var item = day_target_list[i];
 				var week_item = {};
-				week_item.week_id = item.target_id;
+				week_item.week_id = item.target_id+100;//每日的任务的id加100
 				week_item.description = item.target_description;
 				week_item.score_request = item.target_reqeust;
 				week_item.score_now = item.target_now;
@@ -103,7 +114,7 @@ export default {
 			for (var i = 0; i < regular_target_list.length; i++) {
 				var item = regular_target_list[i];
 				var week_item = {};
-				week_item.week_id = item.target_id;
+				week_item.week_id = item.target_id;//常规任务的id不变
 				week_item.description = item.target_week.description;
 				week_item.score_request = item.target_week.score_request;
 				week_item.score_now = item.target_week.score_now;
@@ -116,7 +127,7 @@ export default {
 			for (var i = 0; i < week_target_list.length; i++) {
 				var item = week_target_list[i];
 				var week_item = {};
-				week_item.week_id = item.target_id;
+				week_item.week_id = item.target_id+1000;//每周的任务的id加1000
 				week_item.description = item.target_description;
 				week_item.score_request = item.target_reqeust;
 				week_item.score_now = item.target_now;
@@ -126,6 +137,99 @@ export default {
 				this.week_list.push(week_item);
 			}
 
+		},
+		week_finish(id) {
+			console.log("week_finish")
+			console.log(id)
+			if (id >= 1000) {
+				console.log("week_finish,每周10个花花奖励1钻石")
+				var week_id = id - 1000
+				if (this.week_target_list[week_id].target_now < this.week_target_list[week_id].target_reqeust) {
+					console.log("分数异常，出错啦，拒绝领奖")
+					uni.showToast({
+						title: '分数异常，出错啦，拒绝领奖',
+						icon: 'none',
+						duration: 2000
+					});
+					return
+				}
+				//更新本地数据
+				this.week_target_list[week_id].target_checked = true
+				//todo:根据奖励的不同，跟新本地数据的其他区域，比如说联动影响的其他任务
+				//更新全局数据
+				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
+				if(this.week_target_list[week_id].award.item=="diamond"){
+					getApp().globalData.userInfo.data.key_data.diamond.num_all+=this.week_target_list[week_id].award.number
+					getApp().globalData.userInfo.data.key_data.diamond.num_day+=this.week_target_list[week_id].award.number
+					getApp().globalData.userInfo.data.key_data.diamond.num_week+=this.week_target_list[week_id].award.number
+					//没有其他watch钻石的任务
+				}
+				uni.showToast({
+					title: '领取成功,获得'+this.week_target_list[week_id].award.number+'个'+this.week_target_list[week_id].award.item,
+					icon: 'success',
+					duration: 2000
+				});
+			} else if (id<1000 && id>=100) {
+				console.log("day_finish,每日20分奖励1个花花")
+				var day_id = id - 100
+				if (this.day_target_list[day_id].target_now < this.day_target_list[day_id].target_reqeust || getApp().globalData.userInfo.data.key_data.score.num_day<20) {
+					console.log("当日分数为",getApp().globalData.userInfo.data.key_data.score.num_day)
+					console.log("分数异常，出错啦，拒绝领奖")
+					uni.showToast({
+						title: '分数异常，出错啦，拒绝领奖',
+						icon: 'none',
+						duration: 2000
+					});
+					return
+				}
+				//更新本地数据
+				this.day_target_list[day_id].target_checked = true
+				//更新watch花花的任务
+				this.week_target_list[0].target_now+=this.day_target_list[day_id].award.number
+				//更新全局数据
+				getApp().globalData.userInfo.data.day_target_list = this.day_target_list
+				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
+				if(this.day_target_list[day_id].award.item=="flower"){
+					getApp().globalData.userInfo.data.key_data.flower.num_all+=this.day_target_list[day_id].award.number
+					getApp().globalData.userInfo.data.key_data.flower.num_day+=this.day_target_list[day_id].award.number
+					getApp().globalData.userInfo.data.key_data.flower.num_week+=this.day_target_list[day_id].award.number
+				}
+				uni.showToast({
+					title: '领取成功,获得'+this.day_target_list[day_id].award.number+'个'+this.day_target_list[day_id].award.item,
+					icon: 'success',
+					duration: 2000
+				});
+			} else {
+				console.log("regular_finish")
+				var regular_id = id
+				if (this.regular_target_list[regular_id].target_week.score_now < this.regular_target_list[regular_id].target_week.score_request) {
+					console.log("分数异常，出错啦，拒绝领奖")
+					uni.showToast({
+						title: '分数异常，出错啦，拒绝领奖',
+						icon: 'none',
+						duration: 2000
+					});
+					return
+				}
+				//更新本地数据
+				this.regular_target_list[regular_id].target_week.target_checked = true
+				this.week_target_list[0].target_now+=this.regular_target_list[regular_id].target_week.award.number
+				//更新全局数据
+				getApp().globalData.userInfo.data.regular_target_list = this.regular_target_list
+				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
+				if(this.regular_target_list[regular_id].target_week.award.item=="flower"){
+					getApp().globalData.userInfo.data.key_data.flower.num_all+=this.regular_target_list[regular_id].target_week.award.number
+					getApp().globalData.userInfo.data.key_data.flower.num_day+=this.regular_target_list[regular_id].target_week.award.number
+					getApp().globalData.userInfo.data.key_data.flower.num_week+=this.regular_target_list[regular_id].target_week.award.number
+				}
+				uni.showToast({
+					title: '领取成功,获得'+this.regular_target_list[regular_id].target_week.award.number+'个'+this.regular_target_list[regular_id].target_week.award.item,
+					icon: 'success',
+					duration: 2000
+				});
+			}
+			this.update_data()
+			//todo：log记录
 		},
 		async add_week() {
 			const WM = uniCloud.importObject("week_manager")
@@ -153,9 +257,6 @@ export default {
 					.week_reqest
 			}
 		},
-		week_finish(id) {
-			console.log(id)
-		}
 	}
 }
 </script>

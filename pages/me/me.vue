@@ -56,6 +56,9 @@
 		onLoad() {
 			this.user_name = getApp().globalData.userInfo.user_name;
 			this.user_avatar = getApp().globalData.userInfo.user_avatar;
+		},
+		onShow() {
+			console.log("me onShow")
 			this.num_flower = getApp().globalData.userInfo.data.key_data.flower.num_all;
 			this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
 		},

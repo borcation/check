@@ -11,6 +11,7 @@
 			console.log('App Hide')
 		},
 		globalData: {
+			update_flag: false,
 			userInfo: {
 				user_id: 0,
 				user_name: "孙玉琼",
@@ -25,13 +26,13 @@
 						},
 						flower: {
 							name: "花花",
-							num_all: 0,
+							num_all: 50,
 							num_day: 0,
 							num_week: 0
 						},
 						diamond: {
 							name: "钻石",
-							num_all: 0,
+							num_all: 3,
 							num_day: 0,
 							num_week: 0
 						}
@@ -43,7 +44,7 @@
 							target_score_list: ["九点后", "九点", "八点半", "八点", "七点半"],
 							target_checked: false,
 							target_week: {
-								description: "每周早睡达到20分",
+								description: "每周早起达到20分",
 								score_request: 20,
 								score_now: 0,
 								award: {
@@ -107,7 +108,7 @@
 						{
 							target_id: 4,
 							target_name: "🏋️‍♂️锻炼",
-							target_description: "你今天运动了吗",
+							target_description: "你今天运动了吗？",
 							target_score_list: ["没锻炼", "1h", "2h", "3h", "4h"],
 							target_checked: false,
 							target_week: {
@@ -124,7 +125,7 @@
 						{
 							target_id: 5,
 							target_name: "🥰情绪",
-							target_description: "你今天心情怎么样",
+							target_description: "你今天心情怎么样呀？",
 							target_score_list: ["心情烦闷", "略显疲惫", "无风无浪", "小小喜悦", "干劲十足"],
 							target_checked: false,
 							target_week: {
@@ -144,7 +145,7 @@
 						target_description: "每日达到20分",
 						target_watch: "score.num_day",
 						target_reqeust: 20,
-						target_now: 20,
+						target_now: 0,
 						award: {
 							item: "flower",
 							number: 1

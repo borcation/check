@@ -11,7 +11,7 @@
 
 		<view class="target-box">
 			<view class="target-item" v-for="(item, index) in regular_target_list" :key="item.target_id"
-				@click="pop(item.target_id, item.target_name, item.target_description, item.target_score_list)">
+				@click="pop(item.target_id, item.target_name, item.target_description, item.target_score_list,item.target_checked)">
 				<view class="target-item-block"></view>
 				<view class="target-item-name">
 					{{ item.target_name }}
@@ -51,7 +51,7 @@
 					<view>{{ item }}</view>
 				</view> -->
 				<view class="pop-button">
-					<button size="default" type="default" plain="true" style="width: 120px;height: 50px;">打卡</button>
+					<button :disabled="pop_data.current_score==-1||pop_data.status==true" size="default" type="default" plain="true" style="width: 120px;height: 50px;" @click="check">打卡</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -92,6 +92,7 @@ export default {
 				description: '',
 				options: {},
 				current_score: -1,
+				status: false
 			}
 		}
 	},
@@ -114,41 +115,67 @@ export default {
 			var day = date.getDate();
 			return year + '-' + month + '-' + day;
 		},
-		pop(id, name, description, options) {
+		pop(id, name, description, options,status) {
 			this.pop_data.id = id;
 			this.pop_data.name = name;
-			this.pop_data.description = description;
-			this.pop_data.options = Object.values(options);  // 确保 options 是数组
-			this.$refs.popup.open();
-		},
-
-		async add() {
-			console.log('add')
-			const TM = uniCloud.importObject("target_manager");
-			var max_id = await TM.get_max_id();
-			console.log('max', max_id)
-			const target_info = {
-				"target_id": max_id + 1,
-				"target_name": "情绪状态",
-				"target_description": "你今天心情怎么样?",
-				"target_options": {
-					"score0_item": "心情烦闷",
-					"score1_item": "略显疲惫",
-					"score2_item": "无风无浪",
-					"score3_item": "小小喜悦",
-					"score4_item": "干劲十足",
-				},
-				"target_is_done": false,
-				"target_frequency": "per_day",
-				"target_use": true
+			if(status==true){
+				this.pop_data.description = '你今天已经打过卡啦！';
+			}else{
+				this.pop_data.description = description;
 			}
-			// var r = await TM.target_add(target_info)
-			this.$refs.tgt.refresh() //udb为unicloud-db组件的ref属性值
+			this.pop_data.options = Object.values(options);  // 确保 options 是数组
+			this.pop_data.current_score = -1;
+			this.pop_data.status = status;
+			this.$refs.popup.open();
 		},
 		radioChange: function (evt) {
 			console.log(evt.detail);
 			this.pop_data.current_score = evt.detail.value;
-		}
+		},
+		check() {
+			console.log('check')
+			console.log(this.pop_data.id, this.pop_data.current_score)
+			//修改当前目标状态
+			this.regular_target_list[this.pop_data.id].target_checked = true;
+			this.regular_target_list[this.pop_data.id].target_week.score_now += this.pop_data.current_score;
+			//同步到全局变量
+			getApp().globalData.userInfo.data.regular_target_list[this.pop_data.id] = this.regular_target_list[this.pop_data.id];
+			getApp().globalData.userInfo.data.key_data.score.num_all += this.pop_data.current_score;
+			getApp().globalData.userInfo.data.key_data.score.num_day += this.pop_data.current_score;
+			getApp().globalData.userInfo.data.key_data.score.num_week += this.pop_data.current_score;
+			//修改全局变量中的每日目标
+			getApp().globalData.userInfo.data.day_target_list[0].target_now += this.pop_data.current_score;
+			uni.showToast({
+				title: '打卡成功,本日积分+' + this.pop_data.current_score,
+				icon: 'success',
+				mask: true
+			})
+			this.$refs.popup.close();
+			//todo：log记录
+		},
+		// async add() {
+		// 	console.log('add')
+		// 	const TM = uniCloud.importObject("target_manager");
+		// 	var max_id = await TM.get_max_id();
+		// 	console.log('max', max_id)
+		// 	const target_info = {
+		// 		"target_id": max_id + 1,
+		// 		"target_name": "情绪状态",
+		// 		"target_description": "你今天心情怎么样?",
+		// 		"target_options": {
+		// 			"score0_item": "心情烦闷",
+		// 			"score1_item": "略显疲惫",
+		// 			"score2_item": "无风无浪",
+		// 			"score3_item": "小小喜悦",
+		// 			"score4_item": "干劲十足",
+		// 		},
+		// 		"target_is_done": false,
+		// 		"target_frequency": "per_day",
+		// 		"target_use": true
+		// 	}
+		// 	// var r = await TM.target_add(target_info)
+		// 	this.$refs.tgt.refresh() //udb为unicloud-db组件的ref属性值
+		// },
 	}
 }
 </script>

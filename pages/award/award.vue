@@ -28,8 +28,9 @@ export default {
 		return {
 			num_flower: 15,
 			num_diamond: 1,
-			exchange_list: [{
-				exchange_id: 1,
+			exchange_list: [
+			{
+				exchange_id: 0,
 				exchange_description: "15个花花换1个钻石",
 				exchange_works: [{
 					object: "flower",
@@ -38,6 +39,19 @@ export default {
 				{
 					object: "diamond",
 					num: 1
+				}]
+			},
+			{
+				exchange_id: 1,
+				exchange_description: "1个钻石换15个花花",
+				exchange_works: [
+				{
+					object: "diamond",
+					num: -1
+				},
+				{
+					object: "flower",
+					num: 15
 				}]
 			},
 			{
@@ -92,8 +106,56 @@ export default {
 		this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
 	},
 	methods: {
-		exchange() {
-			console.log("兑换")
+		exchange(id) {
+			console.log("兑换",id)
+			let exchange = this.exchange_list.find(item => item.exchange_id == id)
+			for (let i = 0; i < exchange.exchange_works.length; i++) {
+				let work = exchange.exchange_works[i]
+				if(work.object == "flower") {
+					console.log("花花兑换")
+					//检查保底
+					if(this.num_flower + work.num < 0) {
+						uni.showToast({
+							title: '花花不够啦！',
+							icon: 'fail',
+							mask: true
+						})
+						return
+					}
+					this.num_flower += work.num
+					//花花都是减少的
+					getApp().globalData.userInfo.data.key_data.flower.num_all += work.num
+					//不改变其他两项，因为是兑换，也不影响目标进度
+					//todo：log记录
+					uni.showToast({
+						title: '成功用'+exchange.exchange_description+"(8s后消失,请截图)",
+						icon: 'none',
+						mask: true,
+						duration: 8000
+					})
+				} else if(work.object == "diamond") {
+					//检查保底
+					if(this.num_diamond + work.num < 0) {
+						uni.showToast({
+							title: '钻石不够啦！',
+							icon: 'fail',
+							mask: true
+						})
+						return
+					}
+					console.log("钻石兑换")
+					this.num_diamond += work.num
+					getApp().globalData.userInfo.data.key_data.diamond.num_all += work.num
+					//不改变其他两项，因为是兑换，也不影响目标进度
+					//todo：log记录
+					uni.showToast({
+						title: '成功用'+exchange.exchange_description+"(8s后消失,请截图)",
+						icon: 'none',
+						mask: true,
+						duration: 8000
+					})
+				}
+			}
 		}
 	}
 }
