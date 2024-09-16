@@ -3,7 +3,7 @@
 		<view class="head_top"></view>
 		<view class="user_info">
 			<view class="user_logo">
-				<image src="/static/logo.jpg" class="logo"></image>
+				<image src="/static/logo.png" class="logo"></image>
 			</view>
 			<view class="user_name">{{ user_name }}</view>
 			<view class="award_box">
@@ -47,7 +47,7 @@
 	export default {
 		data() {
 			return {
-				user_name: "孙玉琼",
+				user_name: "玉儿宝贝",
 				user_avatar: '/static/avatar.png',
 				num_flower: 15,
 				num_diamond: 1,
@@ -71,6 +71,11 @@
 			go_log() {
 				uni.navigateTo({
 					url: '/pages/log/log'
+				})
+			},
+			go_set() {
+				uni.navigateTo({
+					url: '/pages/set/set'
 				})
 			},
 		}

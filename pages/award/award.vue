@@ -13,7 +13,7 @@
 		<view  class="exchange_list">
 			<unicloud-db v-slot:default="{data, loading, error, options}" collection="exchange_list" orderby="exchange_id asc">
 				<view v-if="error">{{error.message}}</view>
-				<view v-else-if="loading">正在更新...</view>
+				<view v-else-if="loading">正在拉取奖励信息...</view>
 				<view v-else class="exchange_item" v-for="(item, index) in data" :key="item.exchange_id">
 					<view class="name">
 						<text>{{ item.exchange_description }}</text>
@@ -110,7 +110,7 @@ export default {
 		this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
 	},
 	methods: {
-		exchange(data,id) {
+		async exchange(data,id) {
 			console.log("兑换",id)
 			let exchange = data.find(item => item.exchange_id == id)
 			for (let i = 0; i < exchange.exchange_works.length; i++) {
@@ -121,7 +121,6 @@ export default {
 					if(this.num_flower + work.num < 0) {
 						uni.showToast({
 							title: '花花不够啦！',
-							icon: 'fail',
 							mask: true
 						})
 						return
@@ -130,19 +129,11 @@ export default {
 					//花花都是减少的
 					getApp().globalData.userInfo.data.key_data.flower.num_all += work.num
 					//不改变其他两项，因为是兑换，也不影响目标进度
-					//todo：log记录
-					uni.showToast({
-						title: '成功用'+exchange.exchange_description+"(8s后消失,请截图)",
-						icon: 'none',
-						mask: true,
-						duration: 8000
-					})
 				} else if(work.object == "diamond") {
 					//检查保底
 					if(this.num_diamond + work.num < 0) {
 						uni.showToast({
 							title: '钻石不够啦！',
-							icon: 'fail',
 							mask: true
 						})
 						return
@@ -151,15 +142,24 @@ export default {
 					this.num_diamond += work.num
 					getApp().globalData.userInfo.data.key_data.diamond.num_all += work.num
 					//不改变其他两项，因为是兑换，也不影响目标进度
-					//todo：log记录
-					uni.showToast({
-						title: '成功用'+exchange.exchange_description+"(8s后消失,请截图)",
-						icon: 'none',
-						mask: true,
-						duration: 8000
-					})
+
 				}
 			}
+			await this.log_upload("user",exchange.exchange_description)
+			uni.showToast({
+				title: '成功用'+exchange.exchange_description+"(8s后消失,请截图)",
+				icon: 'none',
+				mask: true,
+				duration: 8000
+			})
+		},
+		async log_upload(type,event){
+			const LM = uniCloud.importObject("log_manager");
+			let log_timestamp = new Date().toLocaleString();
+			let data = getApp().globalData.userInfo.data;
+			const res = await LM.log_add(log_timestamp, type, event, data);
+			console.log(res);
+			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
 		}
 	}
 }

@@ -32,6 +32,13 @@
 		{
 			"navigationBarTitleText" : "日志"
 		}
+	},
+	{
+		"path" : "pages/set/set",
+		"style" : 
+		{
+			"navigationBarTitleText" : "设置"
+		}
 	}],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

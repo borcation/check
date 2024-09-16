@@ -242,6 +242,7 @@ export default {
 			let data = getApp().globalData.userInfo.data;
 			const res = await LM.log_add(log_timestamp, type, event, data);
 			console.log(res);
+			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
 		}
 	}
 }

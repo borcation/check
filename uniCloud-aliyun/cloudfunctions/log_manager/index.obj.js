@@ -37,7 +37,15 @@ module.exports = {
 		const res = await lgt.get()
 		console.log("查询结果",res)
 		return res.data
-	}
+	},
+// 删除所有log_id不为-1的日志
+	async delete_log(){
+		const res = await lgt.where({
+			log_id:dbCmd.neq(-1)
+		}).remove()
+		console.log("删除结果",res)
+		return res
+	},
 	
 	// async get_exhb_info( exhb_id_in ){
 	// 	console.log("待查询的活动id",exhb_id_in)

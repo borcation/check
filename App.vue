@@ -11,9 +11,12 @@
 				uni.setStorageSync('lastResetTimestamp', new Date().toLocaleString());
 				lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
 				console.log("第一次启动，将当前时间作为重置时间");
+				uni.setStorageSync('userInfo', this.globalData.userInfo); 
+				console.log("第一次启动，储存初始用户信息");
 			}
 			console.log(lastResetTimestamp);
 			this.resetDataIfNeeded(lastResetTimestamp, new Date().toLocaleString());
+			this.load_userinfo();
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -45,12 +48,16 @@
 			console.log('App Hide')
 		},
 		methods: {
+			load_userinfo(){
+				this.globalData.userInfo = uni.getStorageSync('userInfo');
+			},
 			async log_upload(type,event){
 				const LM = uniCloud.importObject("log_manager");
 				let log_timestamp = new Date().toLocaleString();
 				let data = this.globalData.userInfo.data;
 				const res = await LM.log_add(log_timestamp, type, event, data);
 				console.log(res);
+				uni.setStorageSync('userInfo', this.globalData.userInfo);
 			},
 			async resetDaylyData() {
 				console.log("每日数据重置");
@@ -141,8 +148,8 @@
 			update_flag: false,
 			userInfo: {
 				user_id: 0,
-				user_name: "孙玉琼",
-				user_avatar: "/static/logo.jpg",
+				user_name: "玉儿宝贝",
+				user_avatar: "/static/logo.png",
 				data: {
 					key_data: {
 						score: {
@@ -153,13 +160,13 @@
 						},
 						flower: {
 							name: "花花",
-							num_all: 0,
+							num_all: 5,
 							num_day: 0,
 							num_week: 0
 						},
 						diamond: {
 							name: "钻石",
-							num_all: 0,
+							num_all: 1,
 							num_day: 0,
 							num_week: 0
 						}

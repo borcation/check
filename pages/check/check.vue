@@ -63,7 +63,7 @@ export default {
 	data() {
 		return {
 			// date: new Date().toISOString().slice(0,10),
-			date: new Date(),
+			date: '',
 			time: new Date().toLocaleTimeString(),
 			d_remain: Math.ceil((new Date('2024-12-21') - new Date()) / (1000 * 60 * 60 * 24)),
 			slogan: '每天自律一点点',
@@ -137,24 +137,25 @@ export default {
 			console.log(this.pop_data.id, this.pop_data.current_score)
 			//修改当前目标状态
 			this.regular_target_list[this.pop_data.id].target_checked = true;
-			this.regular_target_list[this.pop_data.id].target_week.score_now += this.pop_data.current_score;
+			this.regular_target_list[this.pop_data.id].target_week.score_now += parseInt(this.pop_data.current_score);
 			//同步到全局变量
 			getApp().globalData.userInfo.data.regular_target_list[this.pop_data.id] = this.regular_target_list[this.pop_data.id];
-			getApp().globalData.userInfo.data.key_data.score.num_all += this.pop_data.current_score;
-			getApp().globalData.userInfo.data.key_data.score.num_day += this.pop_data.current_score;
-			getApp().globalData.userInfo.data.key_data.score.num_week += this.pop_data.current_score;
+			getApp().globalData.userInfo.data.key_data.score.num_all += parseInt(this.pop_data.current_score);
+			getApp().globalData.userInfo.data.key_data.score.num_day += parseInt(this.pop_data.current_score);
+			getApp().globalData.userInfo.data.key_data.score.num_week += parseInt(this.pop_data.current_score);
 			//修改全局变量中的每日目标
-			getApp().globalData.userInfo.data.day_target_list[0].target_now += this.pop_data.current_score;
+			getApp().globalData.userInfo.data.day_target_list[0].target_now += parseInt(this.pop_data.current_score);
 			
 			var event = this.pop_data.name + this.pop_data.current_score + '分';
 			await this.log_upload('user',event);
 
 			uni.showToast({
-				title: '打卡成功,本日积分+' + this.pop_data.current_score,
+				title: '本日积分+' + this.pop_data.current_score,
 				icon: 'success',
 				mask: true
 			})
 			this.$refs.popup.close();
+			this.pop_data.current_score = -1;
 		},
 		async log_upload(type,event){
 			const LM = uniCloud.importObject("log_manager");
@@ -162,6 +163,14 @@ export default {
 			let data = getApp().globalData.userInfo.data;
 			const res = await LM.log_add(log_timestamp, type, event, data);
 			console.log(res);
+			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
+		},
+		add() {
+			uni.showToast({
+				title: '这个功能你老公正在开发中',
+				icon: 'none',
+				mask: true
+			})
 		}
 	}
 }

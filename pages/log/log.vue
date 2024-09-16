@@ -25,7 +25,6 @@
 				<view class="log-takeback" v-if="item.is_takeback">收回</view>
 			</view>
 		</view>
-		<!-- <button	@click="log_download()">按钮</button> -->
 	</view>
 </template>
 <script>
@@ -207,7 +206,8 @@ export default {
 			let data = getApp().globalData.userInfo.data;
 			const res = await LM.log_add(log_timestamp, type, event, data);
 			console.log(res);
-		}
+			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
+		},
 	}
 }
 </script>
