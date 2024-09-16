@@ -45,7 +45,14 @@
 			console.log('App Hide')
 		},
 		methods: {
-			resetDaylyData() {
+			async log_upload(type,event){
+				const LM = uniCloud.importObject("log_manager");
+				let log_timestamp = new Date().toLocaleString();
+				let data = this.globalData.userInfo.data;
+				const res = await LM.log_add(log_timestamp, type, event, data);
+				console.log(res);
+			},
+			async resetDaylyData() {
 				console.log("每日数据重置");
 				this.globalData.userInfo.data.key_data.score.num_day = 0;
 				this.globalData.userInfo.data.key_data.flower.num_day = 0;
@@ -57,8 +64,9 @@
 					item.target_checked = false;
 					item.target_now = 0;
 				});
+				await this.log_upload("system","每日数据重置");
 			},
-			resetWeeklyData() {
+			async resetWeeklyData() {
 				console.log("每周数据重置");
 				this.globalData.userInfo.data.key_data.score.num_week = 0;
 				this.globalData.userInfo.data.key_data.flower.num_week = 0;
@@ -71,10 +79,11 @@
 					item.target_checked = false;
 					item.target_now = 0;
 				});
+				await this.log_upload("system","每周数据重置");
 			},
 			getResetPoint(date, isWeekly) {
 				const resetDate = new Date(date);
-				resetDate.setHours(4, 0, 0, 0); // 设置为凌晨4点
+				resetDate.setHours(18, 10, 20, 0); // 设置为凌晨4点
 				if (isWeekly) {
 					// 如果是每周重置，找到最近的周一凌晨4点
 					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
@@ -83,7 +92,7 @@
 				}
 				return resetDate;
 			},
-			resetDataIfNeeded(lastResetTimestamp, now) {
+			async resetDataIfNeeded(lastResetTimestamp, now) {
 				console.log('lastResetTimestamp:', lastResetTimestamp);
 				console.log('now:', now);
 				const lastResetDate = new Date(lastResetTimestamp); // 将上一次重置时间转换为 Date 对象
@@ -112,11 +121,11 @@
 				// 如果需要重置数据，执行重置逻辑
 				if (needDailyReset || needWeeklyReset) {
 					if (needDailyReset) {
-						this.resetDaylyData();
+						await this.resetDaylyData();
 						console.log("数据已每日重置");
 					}
 					if (needWeeklyReset) {
-						this.resetWeeklyData();
+						await this.resetWeeklyData();
 						console.log("数据已每周重置");
 					}
 					// 更新缓存中的重置时间为当前时间
