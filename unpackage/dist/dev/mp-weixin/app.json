@@ -2,7 +2,10 @@
   "pages": [
     "pages/check/check",
     "pages/target/target",
-    "pages/me/me"
+    "pages/me/me",
+    "pages/award/award",
+    "pages/log/log",
+    "pages/set/set"
   ],
   "window": {
     "navigationBarTextStyle": "black",

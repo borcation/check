@@ -98,6 +98,8 @@ export default {
 	},
 	onLoad() {
 		this.regular_target_list = getApp().globalData.userInfo.data.regular_target_list;
+		// var time = new Date().toLocaleTimeString()
+		// console.log("当前时间",time)
 	},
 	mounted() {
 		this.date = this.get_date();
