@@ -149,7 +149,7 @@
 			userInfo: {
 				user_id: 0,
 				user_name: "玉儿宝贝",
-				user_avatar: "/static/logo.png",
+				user_avatar: "https://mp-324f3402-0d4f-4186-9711-38d0cd552848.cdn.bspapp.com/logo.png",
 				data: {
 					key_data: {
 						score: {

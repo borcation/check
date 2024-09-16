@@ -3,7 +3,7 @@
 		<view class="head_top"></view>
 		<view class="user_info">
 			<view class="user_logo">
-				<image src="/static/logo.png" class="logo"></image>
+				<image src="https://mp-324f3402-0d4f-4186-9711-38d0cd552848.cdn.bspapp.com/logo.png" class="logo"></image>
 			</view>
 			<view class="user_name">{{ user_name }}</view>
 			<view class="award_box">
@@ -48,7 +48,7 @@
 		data() {
 			return {
 				user_name: "玉儿宝贝",
-				user_avatar: '/static/avatar.png',
+				user_avatar: 'https://mp-324f3402-0d4f-4186-9711-38d0cd552848.cdn.bspapp.com/logo.png',
 				num_flower: 15,
 				num_diamond: 1,
 			}
