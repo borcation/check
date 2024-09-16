@@ -132,7 +132,7 @@ export default {
 			console.log(evt.detail);
 			this.pop_data.current_score = evt.detail.value;
 		},
-		check() {
+		async check() {
 			console.log('check')
 			console.log(this.pop_data.id, this.pop_data.current_score)
 			//修改当前目标状态
@@ -145,37 +145,24 @@ export default {
 			getApp().globalData.userInfo.data.key_data.score.num_week += this.pop_data.current_score;
 			//修改全局变量中的每日目标
 			getApp().globalData.userInfo.data.day_target_list[0].target_now += this.pop_data.current_score;
+			
+			var event = this.pop_data.name + this.pop_data.current_score + '分';
+			await this.log_upload('user',event);
+
 			uni.showToast({
 				title: '打卡成功,本日积分+' + this.pop_data.current_score,
 				icon: 'success',
 				mask: true
 			})
 			this.$refs.popup.close();
-			//todo：log记录
 		},
-		// async add() {
-		// 	console.log('add')
-		// 	const TM = uniCloud.importObject("target_manager");
-		// 	var max_id = await TM.get_max_id();
-		// 	console.log('max', max_id)
-		// 	const target_info = {
-		// 		"target_id": max_id + 1,
-		// 		"target_name": "情绪状态",
-		// 		"target_description": "你今天心情怎么样?",
-		// 		"target_options": {
-		// 			"score0_item": "心情烦闷",
-		// 			"score1_item": "略显疲惫",
-		// 			"score2_item": "无风无浪",
-		// 			"score3_item": "小小喜悦",
-		// 			"score4_item": "干劲十足",
-		// 		},
-		// 		"target_is_done": false,
-		// 		"target_frequency": "per_day",
-		// 		"target_use": true
-		// 	}
-		// 	// var r = await TM.target_add(target_info)
-		// 	this.$refs.tgt.refresh() //udb为unicloud-db组件的ref属性值
-		// },
+		async log_upload(type,event){
+			const LM = uniCloud.importObject("log_manager");
+			let log_timestamp = new Date().toLocaleString();
+			let data = getApp().globalData.userInfo.data;
+			const res = await LM.log_add(log_timestamp, type, event, data);
+			console.log(res);
+		}
 	}
 }
 </script>

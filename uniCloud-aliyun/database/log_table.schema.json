@@ -16,7 +16,7 @@
 			"title": "日志ID",
 			"bsonType": "int"
 		},
-		"log_time": {
+		"log_timestamp": {
 			"title": "日志产生时间",
 			"bsonType": "timestamp"
 		},
@@ -29,24 +29,12 @@
 			"title": "日志事件",
 			"bsonType": "string"
 		},
-		"day_score": {
-			"title": "当下总分",
-			"bsonType": "int"
+		"data": {
+			"title": "日志数据",
+			"bsonType": "object"
 		},
-		"score_number": {
-			"title": "分数详情",
-			"bsonType": "string"
-		},
-		"flower_number": {
-			"title": "当前花花数量",
-			"bsonType": "int"
-		},
-		"diamond_number": {
-			"title": "当前钻石数量",
-			"bsonType": "int"
-		},
-		"is_takeback": {
-			"title": "log是否允许收回",
+		"is_takeback":{
+			"title": "是否回收",
 			"bsonType": "bool"
 		}
 	}

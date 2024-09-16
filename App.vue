@@ -133,7 +133,7 @@
 			userInfo: {
 				user_id: 0,
 				user_name: "孙玉琼",
-				user_avatar: "/static/avatar.png",
+				user_avatar: "/static/logo.jpg",
 				data: {
 					key_data: {
 						score: {
@@ -144,13 +144,13 @@
 						},
 						flower: {
 							name: "花花",
-							num_all: 50,
+							num_all: 0,
 							num_day: 0,
 							num_week: 0
 						},
 						diamond: {
 							name: "钻石",
-							num_all: 3,
+							num_all: 0,
 							num_day: 0,
 							num_week: 0
 						}

@@ -138,7 +138,7 @@ export default {
 			}
 
 		},
-		week_finish(id) {
+		async week_finish(id) {
 			console.log("week_finish")
 			console.log(id)
 			if (id >= 1000) {
@@ -164,6 +164,8 @@ export default {
 					getApp().globalData.userInfo.data.key_data.diamond.num_week+=this.week_target_list[week_id].award.number
 					//没有其他watch钻石的任务
 				}
+				var event = this.week_target_list[week_id].target_description
+				await this.log_upload("user",event)
 				uni.showToast({
 					title: '领取成功,获得'+this.week_target_list[week_id].award.number+'个'+this.week_target_list[week_id].award.item,
 					icon: 'success',
@@ -194,6 +196,8 @@ export default {
 					getApp().globalData.userInfo.data.key_data.flower.num_day+=this.day_target_list[day_id].award.number
 					getApp().globalData.userInfo.data.key_data.flower.num_week+=this.day_target_list[day_id].award.number
 				}
+				var event = this.day_target_list[day_id].target_description
+				await this.log_upload("user",event)
 				uni.showToast({
 					title: '领取成功,获得'+this.day_target_list[day_id].award.number+'个'+this.day_target_list[day_id].award.item,
 					icon: 'success',
@@ -222,6 +226,8 @@ export default {
 					getApp().globalData.userInfo.data.key_data.flower.num_day+=this.regular_target_list[regular_id].target_week.award.number
 					getApp().globalData.userInfo.data.key_data.flower.num_week+=this.regular_target_list[regular_id].target_week.award.number
 				}
+				var event = this.regular_target_list[regular_id].target_week.description
+				await this.log_upload("user",event)
 				uni.showToast({
 					title: '领取成功,获得'+this.regular_target_list[regular_id].target_week.award.number+'个'+this.regular_target_list[regular_id].target_week.award.item,
 					icon: 'success',
@@ -229,34 +235,14 @@ export default {
 				});
 			}
 			this.update_data()
-			//todo：log记录
 		},
-		async add_week() {
-			const WM = uniCloud.importObject("week_manager")
-			var max_id = await WM.get_max_id()
-			const week_info = {
-				"week_id": max_id + 1,
-				"week_name": "当周拿到10个花花",
-				"week_target": -1,
-				"week_current": 0,
-				"week_reqest": 10,
-				"week_award": "diamond",
-				"week_is_done": false,
-			}
-			var res = await WM.week_add(week_info)
-			console.log(res)
-			this.$refs.wek.refresh()
-		},
-		async get_week() {
-			const WM = uniCloud.importObject("week_manager")
-			var res = await WM.week_get_all()
-			console.log(res)
-			this.week_list = res.data
-			for (var i = 0; i < this.week_list.length; i++) {
-				this.week_list[i].week_percent = 100 * this.week_list[i].week_current / this.week_list[i]
-					.week_reqest
-			}
-		},
+		async log_upload(type,event){
+			const LM = uniCloud.importObject("log_manager");
+			let log_timestamp = new Date().toLocaleString();
+			let data = getApp().globalData.userInfo.data;
+			const res = await LM.log_add(log_timestamp, type, event, data);
+			console.log(res);
+		}
 	}
 }
 </script>

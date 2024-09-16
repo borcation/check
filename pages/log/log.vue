@@ -1,30 +1,31 @@
 <template>
 	<view class="bg">
-		<view class="log-list" v-for="(item, index) in log_list" :key="item.award_id">
+		<view class="log-list" v-for="(item, index) in log_list.reverse()" :key="item.log_id">
 			<view class="log-item">
 				<view class="block_1">
 					<view class="log-event">{{ item.log_event }}</view>
 					<view class="log-time">{{ item.log_timestamp }}</view>
 				</view>
 				<view class="block_2">
-					<view class="log-score">当前积分:{{ item.data.key_data.score.num_all }}</view>
-					<view class="log-flower">花花:{{ item.data.key_data.flower.num_all }}</view>
-					<view class="log-diamond">钻石:{{ item.data.key_data.diamond.num_all }}</view>
+					<view class="log-score">当前积分:{{ item.log_data.key_data.score.num_all }}</view>
+					<view class="log-flower">花花:{{ item.log_data.key_data.flower.num_all }}</view>
+					<view class="log-diamond">钻石:{{ item.log_data.key_data.diamond.num_all }}</view>
 				</view>
 				<view class="log-score-number">
-					<view class="log-score-number-item" v-for="(value, key) in item.data.day_target_list" :key="key">
+					<view class="log-score-number-item" v-for="(value, key) in item.log_data.day_target_list" :key="key">
 						<text>-{{ value.target_description }}:{{ value.target_now }}/{{ value.target_reqeust }}</text>
 					</view>
-					<view class="log-score-number-item" v-for="(value, key) in item.data.regular_target_list" :key="key">
+					<view class="log-score-number-item" v-for="(value, key) in item.log_data.regular_target_list" :key="key">
 						<text>-{{ value.target_week.description }}:{{ value.target_week.score_now }}/{{ value.target_week.score_request }}</text>
 					</view>
-					<view class="log-score-number-item" v-for="(value, key) in item.data.week_target_list" :key="key">
+					<view class="log-score-number-item" v-for="(value, key) in item.log_data.week_target_list" :key="key">
 						<text>-{{ value.target_description }}:{{ value.target_now }}/{{ value.target_reqeust }}</text>
 					</view>
 				</view>
 				<view class="log-takeback" v-if="item.is_takeback">收回</view>
 			</view>
 		</view>
+		<!-- <button	@click="log_download()">按钮</button> -->
 	</view>
 </template>
 <script>
@@ -37,7 +38,7 @@ export default {
 				log_from: "system",
 				log_event: "初始状态",
 				is_takeback: true,
-				data: {
+				log_data: {
 					key_data: {
 						score: {
 							name: "积分",
@@ -190,8 +191,23 @@ export default {
 
 		}
 	},
+	onLoad() {
+		this.log_download();
+	},
 	methods: {
-
+		async log_download() {
+			const LM = uniCloud.importObject("log_manager");
+			const res = await LM.get_log_list();
+			console.log(res);
+			this.log_list = res;
+		},
+		async log_upload(type,event){
+			const LM = uniCloud.importObject("log_manager");
+			let log_timestamp = new Date().toLocaleString();
+			let data = getApp().globalData.userInfo.data;
+			const res = await LM.log_add(log_timestamp, type, event, data);
+			console.log(res);
+		}
 	}
 }
 </script>
@@ -216,13 +232,13 @@ export default {
 	align-items: center;
 
 	.log-item {
-		width: 80%;
+		width: 88%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		margin-top: 20px;
-		padding: 5px 20px;
+		margin-top: 10px;
+		padding: 5px 10px;
 		background-color: #ffffff;
 		border-radius: 10px;
 

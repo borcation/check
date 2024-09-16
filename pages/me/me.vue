@@ -3,7 +3,7 @@
 		<view class="head_top"></view>
 		<view class="user_info">
 			<view class="user_logo">
-				<image src="/static/logo.png" class="logo"></image>
+				<image src="/static/logo.jpg" class="logo"></image>
 			</view>
 			<view class="user_name">{{ user_name }}</view>
 			<view class="award_box">
@@ -119,6 +119,7 @@
 				width: 100px;
 				height: 100px;
 				border-radius: 50%;
+				border: 2px solid #98ddff;
 			}
 		}
 		.user_name{
