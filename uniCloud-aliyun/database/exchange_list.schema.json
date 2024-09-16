@@ -1,0 +1,29 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"exchange_id": {
+			"title": "兑换规则ID",
+			"bsonType": "int"
+		},
+		"exchange_description": {
+			"title": "兑奖规则",
+			"bsonType": "string"
+		},
+		"exchange_works": {
+			"title": "兑换操作",
+			"bsonType": "array",
+			"arrayType": "object"
+		}
+	}
+}

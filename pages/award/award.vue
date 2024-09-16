@@ -10,15 +10,19 @@
 				<text class="award_num">{{ num_diamond }}个</text>
 			</view>
 		</view>
-		<view class="exchange_list">
-			<view class="exchange_item" v-for="(item, index) in exchange_list" :key="item.exchange_id">
-				<view class="name">
-					<text>{{ item.exchange_description }}</text>
+		<view  class="exchange_list">
+			<unicloud-db v-slot:default="{data, loading, error, options}" collection="exchange_list" orderby="exchange_id asc">
+				<view v-if="error">{{error.message}}</view>
+				<view v-else-if="loading">正在更新...</view>
+				<view v-else class="exchange_item" v-for="(item, index) in data" :key="item.exchange_id">
+					<view class="name">
+						<text>{{ item.exchange_description }}</text>
+					</view>
+					<view class="button" @click="exchange(data,item.exchange_id)">
+						<text>兑换</text>
+					</view>
 				</view>
-				<view class="button" @click="exchange(item.exchange_id)">
-					<text>兑换</text>
-				</view>
-			</view>
+			</unicloud-db>
 		</view>
 	</view>
 </template>
@@ -28,77 +32,77 @@ export default {
 		return {
 			num_flower: 15,
 			num_diamond: 1,
-			exchange_list: [
-			{
-				exchange_id: 0,
-				exchange_description: "15个花花换1个钻石",
-				exchange_works: [{
-					object: "flower",
-					num: -15
-				},
-				{
-					object: "diamond",
-					num: 1
-				}]
-			},
-			{
-				exchange_id: 1,
-				exchange_description: "1个钻石换15个花花",
-				exchange_works: [
-				{
-					object: "diamond",
-					num: -1
-				},
-				{
-					object: "flower",
-					num: 15
-				}]
-			},
-			{
-				exchange_id: 2,
-				exchange_description: "1个花花换1次投喂",
-				exchange_works: [{
-					object: "flower",
-					num: -1
-				},
-				]
-			},
-			{
-				exchange_id: 3,
-				exchange_description: "1个花花换20元零花钱(用于水果,购物等)",
-				exchange_works: [{
-					object: "flower",
-					num: -1
-				},
-				]
-			},
-			{
-				exchange_id: 4,
-				exchange_description: "1个钻石换出门玩一天",
-				exchange_works: [{
-					object: "diamond",
-					num: -1
-				},
-				]
-			},
-			{
-				exchange_id: 5,
-				exchange_description: "2个钻石换满足你一个愿望",
-				exchange_works: [{
-					object: "diamond",
-					num: -2
-				},
-				]
-			},
-			{
-				exchange_id: 6,
-				exchange_description: "3个钻石换见面3天",
-				exchange_works: [{
-					object: "diamond",
-					num: -3
-				},
-				]
-			}],
+		// 	exchange_list: [
+		// 	{
+		// 		exchange_id: 0,
+		// 		exchange_description: "15个花花换1个钻石",
+		// 		exchange_works: [{
+		// 			object: "flower",
+		// 			num: -15
+		// 		},
+		// 		{
+		// 			object: "diamond",
+		// 			num: 1
+		// 		}]
+		// 	},
+		// 	{
+		// 		exchange_id: 1,
+		// 		exchange_description: "1个钻石换15个花花",
+		// 		exchange_works: [
+		// 		{
+		// 			object: "diamond",
+		// 			num: -1
+		// 		},
+		// 		{
+		// 			object: "flower",
+		// 			num: 15
+		// 		}]
+		// 	},
+		// 	{
+		// 		exchange_id: 2,
+		// 		exchange_description: "1个花花换1次投喂",
+		// 		exchange_works: [{
+		// 			object: "flower",
+		// 			num: -1
+		// 		},
+		// 		]
+		// 	},
+		// 	{
+		// 		exchange_id: 3,
+		// 		exchange_description: "1个花花换20元零花钱(用于水果,购物等)",
+		// 		exchange_works: [{
+		// 			object: "flower",
+		// 			num: -1
+		// 		},
+		// 		]
+		// 	},
+		// 	{
+		// 		exchange_id: 4,
+		// 		exchange_description: "1个钻石换出门玩一天",
+		// 		exchange_works: [{
+		// 			object: "diamond",
+		// 			num: -1
+		// 		},
+		// 		]
+		// 	},
+		// 	{
+		// 		exchange_id: 5,
+		// 		exchange_description: "2个钻石换满足你一个愿望",
+		// 		exchange_works: [{
+		// 			object: "diamond",
+		// 			num: -2
+		// 		},
+		// 		]
+		// 	},
+		// 	{
+		// 		exchange_id: 6,
+		// 		exchange_description: "3个钻石换见面3天",
+		// 		exchange_works: [{
+		// 			object: "diamond",
+		// 			num: -3
+		// 		},
+		// 		]
+		// 	}],
 		}
 	},
 	onLoad() {
@@ -106,9 +110,9 @@ export default {
 		this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
 	},
 	methods: {
-		exchange(id) {
+		exchange(data,id) {
 			console.log("兑换",id)
-			let exchange = this.exchange_list.find(item => item.exchange_id == id)
+			let exchange = data.find(item => item.exchange_id == id)
 			for (let i = 0; i < exchange.exchange_works.length; i++) {
 				let work = exchange.exchange_works[i]
 				if(work.object == "flower") {
