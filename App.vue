@@ -3,12 +3,97 @@
 		onLaunch: function() {
 			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
 			console.log('App Launch')
+			console.log("checkForUpdate")
+			this.checkForUpdates();
 		},
 		onShow: function() {
 			console.log('App Show')
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		methods: {
+			// 每日更新的函数
+			updateDataDayly() {
+				console.log("正在更新每日数据...");
+
+				// 执行每日更新的操作，比如从服务器获取每日数据等
+
+				// 更新完成后，保存当前时间（本地时间）作为最新更新时间
+				localStorage.setItem('lastDayUpdate', new Date().toLocaleString());
+				console.log("每日数据已更新");
+			},
+
+			// 每周更新的函数
+			updateWeeklyData() {
+				console.log("正在更新每周数据...");
+
+				// 执行每周更新的操作，比如从服务器获取整周数据等
+
+				// 更新完成后，保存当前时间（本地时间）作为最新更新时间
+				localStorage.setItem('lastWeekUpdate', new Date().toLocaleString());
+				console.log("每周数据已更新");
+			},
+
+			// 判断是否需要每日更新
+			shouldUpdateDayly(lastDayUpdate, now) {
+				const isSameDay = lastDayUpdate.getDate() === now.getDate() && lastDayUpdate.getMonth() === now.getMonth() &&
+					lastDayUpdate.getFullYear() === now.getFullYear();
+				const isAfter4AMToday = isSameDay && lastDayUpdate.getHours() >= 4;
+
+				// 如果不是同一天，或者同一天但上次更新在4点之前，则需要更新
+				return !isAfter4AMToday;
+			},
+
+			// 判断是否需要每周更新
+			shouldUpdateWeekly(lastWeekUpdate, now) {
+				// 将传入的时间字符串转换为Date对象
+				const lastUpdate = new Date(lastWeekUpdate);
+				const current = new Date(now);
+
+				// 获取当前日期的星期几，0代表周日，1代表周一，以此类推
+				const todayIs = current.getDay();
+
+				// 创建本周一早上4点的时间点
+				const thisMondayAt4AM = new Date(current);
+				// 调整时间为本周一的4点
+				thisMondayAt4AM.setHours(4, 0, 0, 0);
+				thisMondayAt4AM.setDate(thisMondayAt4AM.getDate() - todayIs + (todayIs > 0 ? 0 :
+				7)); // 如果今天是周日，确保减去7天得到上一周的周一
+
+				// 创建上周一早上4点的时间点
+				const lastMondayAt4AM = new Date(lastUpdate);
+				lastMondayAt4AM.setDate(lastMondayAt4AM.getDate() - 7); // 减去7天，得到上周一
+				lastMondayAt4AM.setHours(4, 0, 0, 0); // 设置时间为4点
+
+				// 判断逻辑：如果上次更新是在上周一之前，并且当前时间在本周一之后，则需要更新
+				return lastMondayAt4AM.getTime() <= lastUpdate.getTime() && current.getTime() >= thisMondayAt4AM.getTime();
+			}
+
+			// 统一检查并更新的函数
+			checkForUpdates() {
+				const lastDayUpdateStr = localStorage.getItem('lastDayUpdate'); // 获取上次更新的时间（字符串形式）
+				const lastWeekUpdateStr = localStorage.getItem('lastWeekUpdate'); // 获取上次更新的时间（字符串形式）
+				const now = new Date();
+
+				if (lastDayUpdateStr && lastWeekUpdateStr) {
+					const lastDayUpdate = new Date(lastDayUpdateStr); // 将存储的本地时间字符串转换为 Date 对象
+					const lastWeekUpdate = new Date(lastWeekUpdateStr); // 将存储的本地时间字符串转换为 Date 对象
+					// 检查每日更新
+					if (shouldUpdateDayly(lastDayUpdate, now)) {
+						updateDataDayly();
+					}
+
+					// 检查每周更新
+					if (shouldUpdateWeekly(lastWeekUpdate, now)) {
+						updateWeeklyData();
+					}
+				} else {
+					// 如果从未更新过，执行每日和每周更新
+					updateDataDayly();
+					updateWeeklyData();
+				}
+			}
 		},
 		globalData: {
 			update_flag: false,
