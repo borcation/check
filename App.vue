@@ -4,94 +4,127 @@
 			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
 			console.log('App Launch')
 			console.log("checkForUpdate")
-			this.checkForUpdates();
+			var lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
+			if (!lastResetTimestamp) {
+				// 如果没有上次重置时间，说明是第一次启动，将当前时间作为重置时间
+				// 假设使用 localStorage 存储
+				uni.setStorageSync('lastResetTimestamp', new Date().toLocaleString());
+				lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
+				console.log("第一次启动，将当前时间作为重置时间");
+			}
+			console.log(lastResetTimestamp);
+			this.resetDataIfNeeded(lastResetTimestamp, new Date().toLocaleString());
 		},
 		onShow: function() {
 			console.log('App Show')
+			// // 测试用例 1：每日重置 - 昨天4点之前
+			// console.log('测试用例 1 - 每日重置');
+			// this.resetDataIfNeeded('2024-09-14T03:00:00', '2024-09-15T05:00:00'); // 应触发每日重置
+
+			// // 测试用例 2：每日重置 - 今天凌晨后
+			// console.log('测试用例 2 - 不需要每日重置');
+			// this.resetDataIfNeeded('2024-09-15T05:00:00', '2024-09-15T06:00:00'); // 不应触发重置
+
+			// // 测试用例 3：每周重置 - 上周一凌晨之前
+			// console.log('测试用例 3 - 每周重置');
+			// this.resetDataIfNeeded('2024-09-09T03:00:00', '2024-09-16T05:00:00'); // 应触发每周重置
+
+			// // 测试用例 4：每周重置 - 本周一凌晨后
+			// console.log('测试用例 4 - 不需要每周重置');
+			// this.resetDataIfNeeded('2024-09-16T05:00:00', '2024-09-16T06:00:00'); // 不应触发重置
+
+			// // 测试用例 5：跨多日未启动
+			// console.log('测试用例 5 - 跨多日未启动每日重置');
+			// this.resetDataIfNeeded('2024-09-12T03:00:00', '2024-09-15T05:00:00'); // 应触发多次每日重置
+
+			// // 测试用例 6：跨多周未启动
+			// console.log('测试用例 6 - 跨多周未启动每周重置');
+			// this.resetDataIfNeeded('2024-09-02T03:00:00', '2024-09-16T05:00:00'); // 应触发多次每周重置
 		},
 		onHide: function() {
 			console.log('App Hide')
 		},
 		methods: {
-			// 每日更新的函数
-			updateDataDayly() {
-				console.log("正在更新每日数据...");
-
-				// 执行每日更新的操作，比如从服务器获取每日数据等
-
-				// 更新完成后，保存当前时间（本地时间）作为最新更新时间
-				localStorage.setItem('lastDayUpdate', new Date().toLocaleString());
-				console.log("每日数据已更新");
+			resetDaylyData() {
+				console.log("每日数据重置");
+				this.globalData.userInfo.data.key_data.score.num_day = 0;
+				this.globalData.userInfo.data.key_data.flower.num_day = 0;
+				this.globalData.userInfo.data.key_data.diamond.num_day = 0;
+				this.globalData.userInfo.data.regular_target_list.forEach((item) => {
+					item.target_checked = false;
+				});
+				this.globalData.userInfo.data.day_target_list.forEach((item) => {
+					item.target_checked = false;
+					item.target_now = 0;
+				});
 			},
-
-			// 每周更新的函数
-			updateWeeklyData() {
-				console.log("正在更新每周数据...");
-
-				// 执行每周更新的操作，比如从服务器获取整周数据等
-
-				// 更新完成后，保存当前时间（本地时间）作为最新更新时间
-				localStorage.setItem('lastWeekUpdate', new Date().toLocaleString());
-				console.log("每周数据已更新");
+			resetWeeklyData() {
+				console.log("每周数据重置");
+				this.globalData.userInfo.data.key_data.score.num_week = 0;
+				this.globalData.userInfo.data.key_data.flower.num_week = 0;
+				this.globalData.userInfo.data.key_data.diamond.num_week = 0;
+				this.globalData.userInfo.data.regular_target_list.forEach((item) => {
+					item.target_week.target_checked = false;
+					item.target_week.score_now = 0;
+				});
+				this.globalData.userInfo.data.week_target_list.forEach((item) => {
+					item.target_checked = false;
+					item.target_now = 0;
+				});
 			},
-
-			// 判断是否需要每日更新
-			shouldUpdateDayly(lastDayUpdate, now) {
-				const isSameDay = lastDayUpdate.getDate() === now.getDate() && lastDayUpdate.getMonth() === now.getMonth() &&
-					lastDayUpdate.getFullYear() === now.getFullYear();
-				const isAfter4AMToday = isSameDay && lastDayUpdate.getHours() >= 4;
-
-				// 如果不是同一天，或者同一天但上次更新在4点之前，则需要更新
-				return !isAfter4AMToday;
+			getResetPoint(date, isWeekly) {
+				const resetDate = new Date(date);
+				resetDate.setHours(4, 0, 0, 0); // 设置为凌晨4点
+				if (isWeekly) {
+					// 如果是每周重置，找到最近的周一凌晨4点
+					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
+					const diff = (day + 6) % 7; // 计算从当前日期到上一个周一的天数
+					resetDate.setDate(resetDate.getDate() - diff); // 减去多余的天数，设为周一凌晨4点
+				}
+				return resetDate;
 			},
+			resetDataIfNeeded(lastResetTimestamp, now) {
+				console.log('lastResetTimestamp:', lastResetTimestamp);
+				console.log('now:', now);
+				const lastResetDate = new Date(lastResetTimestamp); // 将上一次重置时间转换为 Date 对象
+				const nowDate = new Date(now);
 
-			// 判断是否需要每周更新
-			shouldUpdateWeekly(lastWeekUpdate, now) {
-				// 将传入的时间字符串转换为Date对象
-				const lastUpdate = new Date(lastWeekUpdate);
-				const current = new Date(now);
+				// 获取每日和每周的重置点
+				const dailyResetPoint = this.getResetPoint(nowDate, false);
+				const weeklyResetPoint = this.getResetPoint(nowDate, true);
+				console.log('dailyResetPoint:', dailyResetPoint);
+				console.log('weeklyResetPoint:', weeklyResetPoint);
 
-				// 获取当前日期的星期几，0代表周日，1代表周一，以此类推
-				const todayIs = current.getDay();
+				// 初始化是否需要重置数据的标志
+				let needDailyReset = false;
+				let needWeeklyReset = false;
 
-				// 创建本周一早上4点的时间点
-				const thisMondayAt4AM = new Date(current);
-				// 调整时间为本周一的4点
-				thisMondayAt4AM.setHours(4, 0, 0, 0);
-				thisMondayAt4AM.setDate(thisMondayAt4AM.getDate() - todayIs + (todayIs > 0 ? 0 :
-				7)); // 如果今天是周日，确保减去7天得到上一周的周一
+				// 判断是否越过了每日重置点
+				if (lastResetDate < dailyResetPoint && nowDate >= dailyResetPoint) {
+					needDailyReset = true;
+				}
 
-				// 创建上周一早上4点的时间点
-				const lastMondayAt4AM = new Date(lastUpdate);
-				lastMondayAt4AM.setDate(lastMondayAt4AM.getDate() - 7); // 减去7天，得到上周一
-				lastMondayAt4AM.setHours(4, 0, 0, 0); // 设置时间为4点
+				// 判断是否越过了每周重置点
+				if (lastResetDate < weeklyResetPoint && nowDate >= weeklyResetPoint) {
+					needWeeklyReset = true;
+				}
 
-				// 判断逻辑：如果上次更新是在上周一之前，并且当前时间在本周一之后，则需要更新
-				return lastMondayAt4AM.getTime() <= lastUpdate.getTime() && current.getTime() >= thisMondayAt4AM.getTime();
-			}
-
-			// 统一检查并更新的函数
-			checkForUpdates() {
-				const lastDayUpdateStr = localStorage.getItem('lastDayUpdate'); // 获取上次更新的时间（字符串形式）
-				const lastWeekUpdateStr = localStorage.getItem('lastWeekUpdate'); // 获取上次更新的时间（字符串形式）
-				const now = new Date();
-
-				if (lastDayUpdateStr && lastWeekUpdateStr) {
-					const lastDayUpdate = new Date(lastDayUpdateStr); // 将存储的本地时间字符串转换为 Date 对象
-					const lastWeekUpdate = new Date(lastWeekUpdateStr); // 将存储的本地时间字符串转换为 Date 对象
-					// 检查每日更新
-					if (shouldUpdateDayly(lastDayUpdate, now)) {
-						updateDataDayly();
+				// 如果需要重置数据，执行重置逻辑
+				if (needDailyReset || needWeeklyReset) {
+					if (needDailyReset) {
+						this.resetDaylyData();
+						console.log("数据已每日重置");
 					}
-
-					// 检查每周更新
-					if (shouldUpdateWeekly(lastWeekUpdate, now)) {
-						updateWeeklyData();
+					if (needWeeklyReset) {
+						this.resetWeeklyData();
+						console.log("数据已每周重置");
 					}
+					// 更新缓存中的重置时间为当前时间
+					// 假设使用 localStorage 存储
+					// localStorage.setItem('lastResetTimestamp', now);
+					uni.setStorageSync('lastResetTimestamp', now);
 				} else {
-					// 如果从未更新过，执行每日和每周更新
-					updateDataDayly();
-					updateWeeklyData();
+					console.log("数据不需要重置");
 				}
 			}
 		},
