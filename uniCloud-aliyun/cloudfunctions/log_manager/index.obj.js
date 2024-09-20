@@ -7,7 +7,7 @@ module.exports = {
 
 	},
 
-	async log_add(log_timestamp,log_from,log_event,data){
+	async log_add(log_timestamp,log_from,log_event,data,device){
 		console.log("进入添加日志函数")
 		console.log("待添加日志",log_timestamp,log_from,log_event,data)
 		
@@ -27,14 +27,17 @@ module.exports = {
 			"log_from":log_from,
 			"log_event":log_event,
 			"log_data":data,
-			"is_takeback":is_takeback
+			"is_takeback":is_takeback,
+			"device":device
 		}
 		const r = await lgt.add(log_info)
 		console.log("添加结果",r)
 		return r
 	},
-	async get_log_list(){
-		const res = await lgt.get()
+	async get_log_list(d){
+		const res = await lgt.where({
+			device: d
+		}).orderBy('log_id', 'desc').limit(20).get()
 		console.log("查询结果",res)
 		return res.data
 	},
@@ -46,40 +49,4 @@ module.exports = {
 		console.log("删除结果",res)
 		return res
 	},
-	
-	// async get_exhb_info( exhb_id_in ){
-	// 	console.log("待查询的活动id",exhb_id_in)
-	// 	const res = await exhb.where({
-	// 		exhb_id:exhb_id_in
-	// 	}).get()
-	// 	r = {
-	// 		"result":false,
-	// 		"exhb_info":[]
-	// 	}
-	// 	console.log("查询结果",res)
-	// 	if(res.data.length == 0){
-	// 		console.log("未查询到活动")
-	// 		return r
-	// 	}else if(res.data.length == 1){
-	// 		console.log("查询到活动",res.data)
-	// 		r = {
-	// 			"result":true,
-	// 			"exhb_info":res.data[0]
-	// 		}
-	// 		return r
-	// 	}else{
-	// 		console.log("出错，查询到多个活动")
-	// 		r = {
-	// 			"result":"error",
-	// 			"exhb_info":[]
-	// 		}
-	// 		return r
-	// 	}
-	// },
-	// async get_new_exhb_id(){
-	// 	const res = await exhb.orderBy('exhb_id','desc').limit(1).field({'exhb_id':true}).get()
-	// 	const new_id = res.data[0].exhb_id + 1
-	// 	// console.log('new',max_id)
-	// 	return new_id
-	// }
 }

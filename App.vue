@@ -8,18 +8,21 @@
 			if (!lastResetTimestamp) {
 				// 如果没有上次重置时间，说明是第一次启动，将当前时间作为重置时间
 				// 假设使用 localStorage 存储
-				uni.setStorageSync('lastResetTimestamp', new Date().toLocaleString());
+				uni.setStorageSync('lastResetTimestamp', new Date());
 				lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
 				console.log("第一次启动，将当前时间作为重置时间");
 				uni.setStorageSync('userInfo', this.globalData.userInfo); 
 				console.log("第一次启动，储存初始用户信息");
 			}
-			console.log(lastResetTimestamp);
-			this.resetDataIfNeeded(lastResetTimestamp, new Date().toLocaleString());
+			this.resetDataIfNeeded(lastResetTimestamp, new Date());
 			this.load_userinfo();
 		},
 		onShow: function() {
 			console.log('App Show')
+			const res = uni.getSystemInfoSync();
+			console.log(res.deviceModel);
+			this.globalData.device = res.deviceModel;
+
 			// // 测试用例 1：每日重置 - 昨天4点之前
 			// console.log('测试用例 1 - 每日重置');
 			// this.resetDataIfNeeded('2024-09-14T03:00:00', '2024-09-15T05:00:00'); // 应触发每日重置
@@ -55,7 +58,7 @@
 				const LM = uniCloud.importObject("log_manager");
 				let log_timestamp = new Date().toLocaleString();
 				let data = this.globalData.userInfo.data;
-				const res = await LM.log_add(log_timestamp, type, event, data);
+				const res = await LM.log_add(log_timestamp, type, event, data, this.globalData.device);
 				console.log(res);
 				uni.setStorageSync('userInfo', this.globalData.userInfo);
 			},
@@ -90,24 +93,24 @@
 			},
 			getResetPoint(date, isWeekly) {
 				const resetDate = new Date(date);
-				resetDate.setHours(18, 10, 20, 0); // 设置为凌晨4点
+				resetDate.setHours(4, 0, 0, 0); // 设置为凌晨4点
 				if (isWeekly) {
 					// 如果是每周重置，找到最近的周一凌晨4点
 					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
 					const diff = (day + 6) % 7; // 计算从当前日期到上一个周一的天数
 					resetDate.setDate(resetDate.getDate() - diff); // 减去多余的天数，设为周一凌晨4点
 				}
+				// console.log('重置时间点:', resetDate);
 				return resetDate;
 			},
 			async resetDataIfNeeded(lastResetTimestamp, now) {
+				lastResetTimestamp = new Date(lastResetTimestamp);
 				console.log('lastResetTimestamp:', lastResetTimestamp);
 				console.log('now:', now);
-				const lastResetDate = new Date(lastResetTimestamp); // 将上一次重置时间转换为 Date 对象
-				const nowDate = new Date(now);
 
 				// 获取每日和每周的重置点
-				const dailyResetPoint = this.getResetPoint(nowDate, false);
-				const weeklyResetPoint = this.getResetPoint(nowDate, true);
+				const dailyResetPoint = this.getResetPoint(now, false);
+				const weeklyResetPoint = this.getResetPoint(now, true);
 				console.log('dailyResetPoint:', dailyResetPoint);
 				console.log('weeklyResetPoint:', weeklyResetPoint);
 
@@ -116,12 +119,12 @@
 				let needWeeklyReset = false;
 
 				// 判断是否越过了每日重置点
-				if (lastResetDate < dailyResetPoint && nowDate >= dailyResetPoint) {
+				if (lastResetTimestamp < dailyResetPoint && now >= dailyResetPoint) {
 					needDailyReset = true;
 				}
 
 				// 判断是否越过了每周重置点
-				if (lastResetDate < weeklyResetPoint && nowDate >= weeklyResetPoint) {
+				if (lastResetTimestamp < weeklyResetPoint && now >= weeklyResetPoint) {
 					needWeeklyReset = true;
 				}
 
@@ -135,9 +138,6 @@
 						await this.resetWeeklyData();
 						console.log("数据已每周重置");
 					}
-					// 更新缓存中的重置时间为当前时间
-					// 假设使用 localStorage 存储
-					// localStorage.setItem('lastResetTimestamp', now);
 					uni.setStorageSync('lastResetTimestamp', now);
 				} else {
 					console.log("数据不需要重置");
@@ -146,6 +146,7 @@
 		},
 		globalData: {
 			update_flag: false,
+			device:null,
 			userInfo: {
 				user_id: 0,
 				user_name: "玉儿宝贝",

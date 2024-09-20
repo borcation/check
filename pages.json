@@ -30,7 +30,7 @@
 		"path" : "pages/log/log",
 		"style" : 
 		{
-			"navigationBarTitleText" : "日志"
+			"navigationBarTitleText" : "最近日志"
 		}
 	},
 	{

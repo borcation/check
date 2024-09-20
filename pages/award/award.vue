@@ -157,7 +157,7 @@ export default {
 			const LM = uniCloud.importObject("log_manager");
 			let log_timestamp = new Date().toLocaleString();
 			let data = getApp().globalData.userInfo.data;
-			const res = await LM.log_add(log_timestamp, type, event, data);
+			const res = await LM.log_add(log_timestamp, type, event, data, getApp().globalData.device);
 			console.log(res);
 			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
 		}
