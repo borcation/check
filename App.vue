@@ -3,6 +3,9 @@
 		onLaunch: function() {
 			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
 			console.log('App Launch')
+			const res = uni.getSystemInfoSync();
+			console.log(res.deviceModel);
+			this.globalData.device = res.deviceModel;
 			console.log("checkForUpdate")
 			var lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
 			if (!lastResetTimestamp) {
@@ -19,9 +22,6 @@
 		},
 		onShow: function() {
 			console.log('App Show')
-			const res = uni.getSystemInfoSync();
-			console.log(res.deviceModel);
-			this.globalData.device = res.deviceModel;
 
 			// // 测试用例 1：每日重置 - 昨天4点之前
 			// console.log('测试用例 1 - 每日重置');

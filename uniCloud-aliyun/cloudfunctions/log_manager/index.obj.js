@@ -13,7 +13,7 @@ module.exports = {
 		
 		const res = await lgt.orderBy('log_id','desc').limit(1).field({'log_id':true}).get()
 		console.log('res',res)
-		var max_id = res.data[0].log_id?res.data[0].log_id:0
+		var max_id = (res.data.length > 0 && res.data[0].log_id) ? res.data[0].log_id : 0
 		console.log('max',max_id)
 
 		if(log_from == "user"){
