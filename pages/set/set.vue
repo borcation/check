@@ -18,7 +18,7 @@
 		methods: {
 			async delete_all_log() {
 				const LM = uniCloud.importObject("log_manager");
-				const res = await LM.delete_log();
+				const res = await LM.delete_log(getApp().globalData.device);
 				console.log(res);
 				uni.showToast({
 					title: "重置完成"
