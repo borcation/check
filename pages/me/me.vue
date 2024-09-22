@@ -59,8 +59,10 @@
 		},
 		onShow() {
 			console.log("me onShow")
+			//从全局变量（内存）中获取用户信息
 			this.num_flower = getApp().globalData.userInfo.data.key_data.flower.num_all;
 			this.num_diamond = getApp().globalData.userInfo.data.key_data.diamond.num_all;
+			console.log(getApp().globalData.device)
 		},
 		methods: {
 			go_award() {

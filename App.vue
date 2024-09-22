@@ -18,7 +18,6 @@
 				console.log("第一次启动，储存初始用户信息");
 			}
 			this.resetDataIfNeeded(lastResetTimestamp, new Date());
-			this.load_userinfo();
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -51,9 +50,6 @@
 			console.log('App Hide')
 		},
 		methods: {
-			load_userinfo(){
-				this.globalData.userInfo = uni.getStorageSync('userInfo');
-			},
 			async log_upload(type,event){
 				const LM = uniCloud.importObject("log_manager");
 				let log_timestamp = new Date().toLocaleString();
@@ -69,10 +65,12 @@
 				this.globalData.userInfo.data.key_data.diamond.num_day = 0;
 				this.globalData.userInfo.data.regular_target_list.forEach((item) => {
 					item.target_checked = false;
+					console.log(item.target_id,"每日打卡重置");
 				});
 				this.globalData.userInfo.data.day_target_list.forEach((item) => {
 					item.target_checked = false;
 					item.target_now = 0;
+					console.log(item.target_id,"每日目标重置");
 				});
 				await this.log_upload("system","每日数据重置");
 			},
@@ -81,14 +79,16 @@
 				this.globalData.userInfo.data.key_data.score.num_week = 0;
 				this.globalData.userInfo.data.key_data.flower.num_week = 0;
 				this.globalData.userInfo.data.key_data.diamond.num_week = 0;
-				this.globalData.userInfo.data.regular_target_list.forEach((item) => {
-					item.target_week.target_checked = false;
-					item.target_week.score_now = 0;
-				});
-				this.globalData.userInfo.data.week_target_list.forEach((item) => {
-					item.target_checked = false;
-					item.target_now = 0;
-				});
+				for (let i = 0; i < this.globalData.userInfo.data.regular_target_list.length; i++) {
+					this.globalData.userInfo.data.regular_target_list[i].target_week.target_checked = false;
+					this.globalData.userInfo.data.regular_target_list[i].target_week.score_now = 0;
+					console.log(item.target_id,"每周打卡重置");
+				}
+				for (let i = 0; i < this.globalData.userInfo.data.week_target_list.length; i++) {
+					this.globalData.userInfo.data.week_target_list[i].target_checked = false;
+					this.globalData.userInfo.data.week_target_list[i].target_now = 0;
+					console.log(item.target_id,"每周目标重置");
+				}
 				await this.log_upload("system","每周数据重置");
 			},
 			getResetPoint(date, isWeekly) {
@@ -138,14 +138,23 @@
 						await this.resetWeeklyData();
 						console.log("数据已每周重置");
 					}
+					this.globalData.update_check = true;
+					this.globalData.update_target = true;
+					this.globalData.update_me = true;
+					// 重置数据后，更新缓存中数据
 					uni.setStorageSync('lastResetTimestamp', now);
+					uni.setStorageSync('userInfo', this.globalData.userInfo);
 				} else {
-					console.log("数据不需要重置");
+					console.log("数据不需要重置,从本地缓存获取userInfo");
+					// 如果不需要重置数据，从本地缓存获取数据到内存中，后续所有数据都从内存中读取，有修改则更新内存和缓存
+					this.globalData.userInfo = uni.getStorageSync('userInfo');
 				}
 			}
 		},
 		globalData: {
-			update_flag: false,
+			update_check: false,
+			update_target: false,
+			update_me: false,
 			device:null,
 			userInfo: {
 				user_id: 0,

@@ -73,7 +73,7 @@ export default {
 						target_name: "☀️早起",
 						target_description: "今天你几点起床的呀？",
 						target_score_list: ["九点后", "九点", "八点半", "八点", "七点半"],
-						target_checked: true,
+						target_checked: false,
 						target_week: {
 							description: "每周早睡达到20分",
 							score_request: 20,
@@ -140,7 +140,7 @@ export default {
 			//修改当前目标状态
 			this.regular_target_list[this.pop_data.id].target_checked = true;
 			this.regular_target_list[this.pop_data.id].target_week.score_now += parseInt(this.pop_data.current_score);
-			//同步到全局变量
+			//同步到全局变量(内存)
 			getApp().globalData.userInfo.data.regular_target_list[this.pop_data.id] = this.regular_target_list[this.pop_data.id];
 			getApp().globalData.userInfo.data.key_data.score.num_all += parseInt(this.pop_data.current_score);
 			getApp().globalData.userInfo.data.key_data.score.num_day += parseInt(this.pop_data.current_score);
@@ -165,6 +165,7 @@ export default {
 			let data = getApp().globalData.userInfo.data;
 			const res = await LM.log_add(log_timestamp, type, event, data, getApp().globalData.device);
 			console.log(res);
+			//将内存数据同步到缓存、并上传到数据库
 			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
 		},
 		add() {

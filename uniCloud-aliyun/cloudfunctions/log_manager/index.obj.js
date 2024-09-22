@@ -44,7 +44,7 @@ module.exports = {
 // 删除该设备的所有log_id不为-1的日志
 	async delete_log(d){
 		const res = await lgt.where({
-			log_id:dbCmd.neq(-1)
+			log_id:dbCmd.neq(-1),
 			device: d
 		}).remove()
 		console.log("删除结果",res)

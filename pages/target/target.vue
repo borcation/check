@@ -55,7 +55,7 @@ export default {
 	mounted() {
 	},
 	onShow() {
-		console.log("target onShow")
+		// console.log("target onShow")
 		this.update_data()
 	},
 	methods: {
@@ -66,7 +66,7 @@ export default {
 			console.log("切换月份", JSON.parse(JSON.stringify(monthInfo)));
 		},
 		shrinkClick(type) {
-			console.log("当前状态", type);
+			console.log("当前日历状态", type);
 		},
 
 		addSign() { // 添加标记
@@ -91,6 +91,7 @@ export default {
 			this.$refs.calendar.deleteSignList(deleteList);
 		},
 		update_data() {
+			//从全局数据（内存）中获取数据
 			this.regular_target_list = getApp().globalData.userInfo.data.regular_target_list;
 			this.day_target_list = getApp().globalData.userInfo.data.day_target_list;
 			this.week_target_list = getApp().globalData.userInfo.data.week_target_list;
@@ -136,7 +137,6 @@ export default {
 				week_item.percent = 100 * week_item.score_now / week_item.score_request;
 				this.week_list.push(week_item);
 			}
-
 		},
 		async week_finish(id) {
 			console.log("week_finish")
@@ -155,8 +155,7 @@ export default {
 				}
 				//更新本地数据
 				this.week_target_list[week_id].target_checked = true
-				//todo:根据奖励的不同，跟新本地数据的其他区域，比如说联动影响的其他任务
-				//更新全局数据
+				//更新全局数据（内存）
 				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
 				if(this.week_target_list[week_id].award.item=="diamond"){
 					getApp().globalData.userInfo.data.key_data.diamond.num_all+=this.week_target_list[week_id].award.number
@@ -188,7 +187,7 @@ export default {
 				this.day_target_list[day_id].target_checked = true
 				//更新watch花花的任务
 				this.week_target_list[0].target_now+=this.day_target_list[day_id].award.number
-				//更新全局数据
+				//更新全局数据（内存）
 				getApp().globalData.userInfo.data.day_target_list = this.day_target_list
 				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
 				if(this.day_target_list[day_id].award.item=="flower"){
@@ -218,7 +217,7 @@ export default {
 				//更新本地数据
 				this.regular_target_list[regular_id].target_week.target_checked = true
 				this.week_target_list[0].target_now+=this.regular_target_list[regular_id].target_week.award.number
-				//更新全局数据
+				//更新全局数据（内存）
 				getApp().globalData.userInfo.data.regular_target_list = this.regular_target_list
 				getApp().globalData.userInfo.data.week_target_list = this.week_target_list
 				if(this.regular_target_list[regular_id].target_week.award.item=="flower"){
@@ -242,6 +241,7 @@ export default {
 			let data = getApp().globalData.userInfo.data;
 			const res = await LM.log_add(log_timestamp, type, event, data, getApp().globalData.device);
 			console.log(res);
+			//将内存数据同步到缓存、并上传到数据库
 			uni.setStorageSync('userInfo', getApp().globalData.userInfo);
 		}
 	}
