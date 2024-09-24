@@ -7,7 +7,7 @@
 					<view class="log-time">{{ item.log_timestamp }}</view>
 				</view>
 				<view class="block_2">
-					<view class="log-score">当前积分:{{ item.log_data.key_data.score.num_all }}</view>
+					<view class="log-score">累计积分:{{ item.log_data.key_data.score.num_all }}</view>
 					<view class="log-flower">花花:{{ item.log_data.key_data.flower.num_all }}</view>
 					<view class="log-diamond">钻石:{{ item.log_data.key_data.diamond.num_all }}</view>
 				</view>

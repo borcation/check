@@ -17,6 +17,8 @@
 				uni.setStorageSync('userInfo', this.globalData.userInfo); 
 				console.log("第一次启动，储存初始用户信息");
 			}
+			//启动时从缓存中读取信息到全局变量（操作所有数据之前）
+			this.globalData.userInfo = uni.getStorageSync('userInfo')
 			this.resetDataIfNeeded(lastResetTimestamp, new Date());
 		},
 		onShow: function() {
@@ -63,15 +65,15 @@
 				this.globalData.userInfo.data.key_data.score.num_day = 0;
 				this.globalData.userInfo.data.key_data.flower.num_day = 0;
 				this.globalData.userInfo.data.key_data.diamond.num_day = 0;
-				this.globalData.userInfo.data.regular_target_list.forEach((item) => {
-					item.target_checked = false;
-					console.log(item.target_id,"每日打卡重置");
-				});
-				this.globalData.userInfo.data.day_target_list.forEach((item) => {
-					item.target_checked = false;
-					item.target_now = 0;
-					console.log(item.target_id,"每日目标重置");
-				});
+				for (let i = 0; i < this.globalData.userInfo.data.regular_target_list.length; i++) {
+					this.globalData.userInfo.data.regular_target_list[i].target_checked = false;
+					console.log(this.globalData.userInfo.data.regular_target_list[i].target_id, "每日打卡重置");
+				}
+				for (let i = 0; i < this.globalData.userInfo.data.day_target_list.length; i++) {
+					this.globalData.userInfo.data.day_target_list[i].target_checked = false;
+					this.globalData.userInfo.data.day_target_list[i].target_now = 0;
+					console.log(this.globalData.userInfo.data.day_target_list[i].target_id, "每日目标重置");
+				}
 				await this.log_upload("system","每日数据重置");
 			},
 			async resetWeeklyData() {
@@ -82,18 +84,18 @@
 				for (let i = 0; i < this.globalData.userInfo.data.regular_target_list.length; i++) {
 					this.globalData.userInfo.data.regular_target_list[i].target_week.target_checked = false;
 					this.globalData.userInfo.data.regular_target_list[i].target_week.score_now = 0;
-					console.log(item.target_id,"每周打卡重置");
-				}
+					console.log(this.globalData.userInfo.data.regular_target_list[i].target_id,"每周打卡重置");
+				} 
 				for (let i = 0; i < this.globalData.userInfo.data.week_target_list.length; i++) {
 					this.globalData.userInfo.data.week_target_list[i].target_checked = false;
 					this.globalData.userInfo.data.week_target_list[i].target_now = 0;
-					console.log(item.target_id,"每周目标重置");
+					console.log(this.globalData.userInfo.data.week_target_list[i].target_id,"每周目标重置");
 				}
 				await this.log_upload("system","每周数据重置");
 			},
 			getResetPoint(date, isWeekly) {
 				const resetDate = new Date(date);
-				resetDate.setHours(4, 0, 0, 0); // 设置为凌晨4点
+				resetDate.setHours(18, 9, 0, 0); // 设置为凌晨4点
 				if (isWeekly) {
 					// 如果是每周重置，找到最近的周一凌晨4点
 					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
