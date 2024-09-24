@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "目标",
-  "usingComponents": {
-    "lunc-calendar": "../../uni_modules/lunc-calendar/components/lunc-calendar/lunc-calendar"
-  }
-}
