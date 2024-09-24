@@ -95,7 +95,7 @@
 			},
 			getResetPoint(date, isWeekly) {
 				const resetDate = new Date(date);
-				resetDate.setHours(18, 9, 0, 0); // 设置为凌晨4点
+				resetDate.setHours(4, 0, 0, 0); // 设置为凌晨4点
 				if (isWeekly) {
 					// 如果是每周重置，找到最近的周一凌晨4点
 					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
