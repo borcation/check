@@ -3,7 +3,7 @@
 		<text>
 			这个页面的按钮谨慎点击，会重置所有数据
 		</text>
-		<button @click="delete_all_log()">日志重置</button>
+		<button @click="delete_all_log()">设备日志重置</button>
 		<button @click="reset_all()">全局数据重置</button>
 	</view>
 </template>

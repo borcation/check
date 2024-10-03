@@ -99,13 +99,15 @@
 				if (isWeekly) {
 					// 如果是每周重置，找到最近的周一凌晨4点
 					const day = resetDate.getDay(); // 获取当前是周几，0表示周日，1表示周一，依此类推
-					const diff = (day + 6) % 7; // 计算从当前日期到上一个周一的天数
+					const week = 6 //周1
+					// const week = 3 //周4
+					const diff = (day + week) % 7; // 计算从当前日期到上一个周一的天数
 					resetDate.setDate(resetDate.getDate() - diff); // 减去多余的天数，设为周一凌晨4点
 				}
 				// console.log('重置时间点:', resetDate);
 				return resetDate;
 			},
-			async resetDataIfNeeded(lastResetTimestamp, now) {
+			async resetDataIfNeeded(lastResetTimestamp, now, forced=false) {
 				lastResetTimestamp = new Date(lastResetTimestamp);
 				console.log('lastResetTimestamp:', lastResetTimestamp);
 				console.log('now:', now);
@@ -144,6 +146,12 @@
 					this.globalData.update_target = true;
 					this.globalData.update_me = true;
 					// 重置数据后，更新缓存中数据
+					uni.setStorageSync('lastResetTimestamp', now);
+					uni.setStorageSync('userInfo', this.globalData.userInfo);
+				} else if(forced){
+					console.log("强制更新");
+					await this.resetDaylyData();
+					await this.resetWeeklyData();
 					uni.setStorageSync('lastResetTimestamp', now);
 					uni.setStorageSync('userInfo', this.globalData.userInfo);
 				} else {

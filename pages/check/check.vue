@@ -27,7 +27,11 @@
 				<uni-icons type="plusempty" size="20" color="gray"></uni-icons>
 				<text style="font-size: 16px;color: gray;">添加目标</text>
 			</view>
-			<view class="target-item-empty" v-if="regular_target_list.length % 2 === 0"></view>
+			<view class="target-item-add" @click="reset()">
+				<uni-icons type="reload" size="20" color="gray"></uni-icons>
+				<text style="font-size: 16px;color: gray;">手动重置数据</text>
+			</view>
+			<view class="target-item-empty" v-if="regular_target_list.length % 2 === 1"></view>
 		</view>
 
 		<uni-popup ref="popup" type="center">
@@ -174,6 +178,10 @@ export default {
 				icon: 'none',
 				mask: true
 			})
+		},
+		reset(){
+			var lastResetTimestamp = uni.getStorageSync('lastResetTimestamp');
+			getApp().resetDataIfNeeded(lastResetTimestamp, new Date(),true)
 		}
 	}
 }
@@ -271,11 +279,9 @@ export default {
 }
 
 .target-item-status {
-	/* background-color:violet; */
-	/* height: 40px; */
-	display: flex;
-	align-items: center;
-	justify-content: center;
+/* 	background-color:violet; */
+	height: 35px;
+	line-height: 35px;
 	margin-right: 10px;
 }
 
